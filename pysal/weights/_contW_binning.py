@@ -192,30 +192,32 @@ class ContiguityWeightsPolygons:
     Contiguity for a collection of polygons using a binning algorithm
     """
 
-    def __init__(self, collection, wttype=1):
+    def __init__(self, polygons, bbox, wttype=1):
         """
 
         Parameters
         ==========
 
-        collection: PySAL PolygonCollection 
+        polygons: list of PySAL Polygon objects
+
+        bbox: bounding box for polygons
 
         wttype: int
                 1: Queen
                 2: Rook
         """
 
-        self.collection = collection
+        self.polygons = polygons
+        self.n = len(polygons)
         self.wttype = wttype
+        self.bbox = bbox
         self.do_weights()
 
     def do_weights(self):
-        if self.collection.type != pysal.cg.Polygon:
-            return False
 
-        shapebox = self.collection.bbox      # bounding box
+        shapebox = self.bbox      # bounding box
 
-        numPoly = self.collection.n
+        numPoly = self.n
         self.numPoly = numPoly
 
         # bucket size
@@ -240,7 +242,7 @@ class ContiguityWeightsPolygons:
         poly2Column = [set() for i in range(numPoly)]
         poly2Row = [set() for i in range(numPoly)]
         for i in range(numPoly):
-            shpObj = self.collection[i]
+            shpObj = self.polygons[i]
             bbcache[i] = shpObj.bbox[:]
             projBBox = [int((shpObj.bbox[:][j] -
                              minbox[j]) / binWidth[j]) for j in xrange(4)]
@@ -257,7 +259,7 @@ class ContiguityWeightsPolygons:
             vertCache = {}
             for polyId in xrange(numPoly):
                 if polyId not in vertCache:
-                    vertCache[polyId] = set(self.collection[polyId].vertices)
+                    vertCache[polyId] = set(self.polygons[polyId].vertices)
                 idRows = poly2Row[polyId]
                 idCols = poly2Column[polyId]
                 rowPotentialNeighbors = set()
@@ -275,9 +277,9 @@ class ContiguityWeightsPolygons:
                 for j in potentialNeighbors:
                     if polyId < j:
                         if j not in vertCache:
-                            vertCache[j] = set(self.collection[j].vertices)
+                            vertCache[j] = set(self.polygons[j].vertices)
                         if bbcommon(bbcache[polyId], bbcache[j]):
-                            vertCache[j] = set(self.collection[j].vertices)
+                            vertCache[j] = set(self.polygons[j].vertices)
                             common = vertCache[
                                 polyId].intersection(vertCache[j])
                             if len(common) > 0:
@@ -292,7 +294,7 @@ class ContiguityWeightsPolygons:
             for polyId in xrange(numPoly):
                 if polyId not in edgeCache:
                     iEdges = {}
-                    iVerts = shpFileObject.get(polyId).vertices
+                    iVerts = self.polygons[polyId].vertices
                     nv = len(iVerts)
                     ne = nv - 1
                     for i in xrange(ne):
@@ -320,7 +322,7 @@ class ContiguityWeightsPolygons:
                     if polyId < j:
                         if bbcommon(bbcache[polyId], bbcache[j]):
                             if j not in edgeCache:
-                                jVerts = shpFileObject.get(j).vertices
+                                jVerts = self.polygons[j].vertices
                                 jEdges = {}
                                 nv = len(jVerts)
                                 ne = nv - 1
