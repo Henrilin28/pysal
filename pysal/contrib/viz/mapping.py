@@ -287,7 +287,7 @@ def plot_poly_lines(shp_link,  savein=None, poly_col='none'):
 
 def plot_choropleth(shp_link, values, m_type, k=5, cmap=None, \
         shp_type='poly', sample_fisher=True, title='', \
-        savein=None, figsize=None, dpi=300, bins=None):
+        savein=None, figsize=None, dpi=300, bins=None, legend=True):
     '''
     Wrapper to quickly create and plot from a lat/lon shapefile
     ...
@@ -335,6 +335,9 @@ def plot_choropleth(shp_link, values, m_type, k=5, cmap=None, \
                       resolution of graphic file
     bins            : list
                       upper bounds for User Defined classification
+    legend          : boolean
+                      True (default) shows legend (colorbar), False does not
+                      show legend
 
     Returns
     -------
@@ -391,8 +394,10 @@ def plot_choropleth(shp_link, values, m_type, k=5, cmap=None, \
         cmap = map_obj.get_cmap()
         norm = map_obj.norm
         boundaries = np.round(map_obj.norm.boundaries, decimals=3)
-        cbar = plt.colorbar(map_obj, cmap=cmap, norm=norm, boundaries=boundaries, \
-                ticks=boundaries, orientation='horizontal', shrink=0.5)
+        if legend:
+            cbar = plt.colorbar(map_obj, cmap=cmap, norm=norm, \
+                   boundaries=boundaries, ticks=boundaries,  \
+                   orientation='horizontal', shrink=0.5)
     if savein:
         plt.savefig(savein, dpi=dpi)
     else:
