@@ -83,7 +83,7 @@ class DBF(pysal.core.Tables.DataTable):
                 record_size += size
                 self.field_info.append((name, typ, size, deci))
             terminator = f.read(1)
-            #assert terminator == '\r'
+            assert terminator == b'\r'
             self.header_size = self.f.tell()
             self.record_size = record_size
             self.record_fmt = fmt
@@ -162,9 +162,11 @@ class DBF(pysal.core.Tables.DataTable):
 
     def read_record(self, i):
         self.seek(i)
+        print(self.f.read(1))
         rec = list(struct.unpack(
             self.record_fmt, self.f.read(self.record_size)))
-        if rec[0] != ' ':
+        #print('rec[0]: ', rec[0])
+        if rec[0] != b' ':
             return self.read_record(i + 1)
         result = []
         for (name, typ, size, deci), value in zip(self.field_info, rec):
@@ -209,6 +211,8 @@ class DBF(pysal.core.Tables.DataTable):
         if self.mode != 'r':
             raise IOError("Invalid operation, Cannot read from a file opened in 'w' mode.")
         if self.pos < len(self):
+            print('len self:', len(self))
+            print('pos: ', self.pos)
             rec = self.read_record(self.pos)
             self.pos += 1
             return rec
@@ -288,11 +292,14 @@ class DBF(pysal.core.Tables.DataTable):
         self.f.write(hdr)
         # field specs
         for name, (typ, size, deci) in zip(self.header, self.field_spec):
+            print(name)
             name = name.ljust(11, '\x00')
-            fld = struct.pack('<11sc4xBB14x', name, typ, size, deci)
+            print(name)
+            print(deci)
+            fld = struct.pack('<11bc4xBB4x', name, typ, size, deci)
             self.f.write(fld)
         # terminator
-        self.f.write('\r')
+        self.f.write(b'\r')
         if self.f.tell() != POS and not self.FIRST_WRITE:
             self.f.seek(POS)
 
@@ -306,11 +313,10 @@ if __name__ == '__main__':
     newDB.field_spec = f.field_spec
     print(f.header)
     for row in f:
-        print(row)
         newDB.write(row)
-    newDB.close()
-    copy = pysal.open('copy.dbf', 'r')
-    f.seek(0)
+    #newDB.close()
+    #copy = pysal.open('copy.dbf', 'r')
+    #f.seek(0)
     #print "HEADER: ", copy.header == f.header
     #print "SPEC: ", copy.field_spec == f.field_spec
     #print "DATA: ", list(copy) == list(f)
