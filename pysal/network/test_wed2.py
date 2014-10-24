@@ -1,6 +1,11 @@
+
+
 import pysal as ps
 import numpy as np
 import operator
+import six
+from six.moves import range
+from six.moves import zip
 
 def adj_nodes(start_key, edges):
     start_key
@@ -52,7 +57,7 @@ def regions_from_graph(nodes, edges, remove_holes = False):
     def find_start_node(nodes,node_coord):
         start_node = []
         minx = float('inf')
-        for key,node in nodes.items():
+        for key,node in list(nodes.items()):
             if node[0] <= minx:
                 minx = node[0]
                 start_node.append(key)
@@ -307,8 +312,8 @@ def regions_from_graph(nodes, edges, remove_holes = False):
             sorted_nodes, edges, nodes, node_coord, primitives = extractfilament(v0,v1,nodes, node_coord, sorted_nodes, edges, primitives,cycle_edge)
         return sorted_nodes, edges, nodes, node_coord, primitives, minimal_cycles,cycle_edge, vertices, ext_edges
     #1.
-    sorted_nodes = sorted(nodes.iteritems(), key=operator.itemgetter(1))
-    node_coord = dict (zip(nodes.values(),nodes.keys()))
+    sorted_nodes = sorted(six.iteritems(nodes), key=operator.itemgetter(1))
+    node_coord = dict (list(zip(list(nodes.values()),list(nodes.keys()))))
     
     #2.
     primitives = []
@@ -414,12 +419,12 @@ def classify_filaments(filaments, cycles, edges, vertices):
         polys.append(ps.cg.Polygon([ps.cg.Point(vertices[pnt]) for pnt in cycle]))        
     
     for filament in filaments:
-        if filament[0] in node_mem.keys() and filament[-1] in node_mem.keys():
+        if filament[0] in list(node_mem.keys()) and filament[-1] in list(node_mem.keys()):
             bridge_filaments.append(filament)
             for node in filament:
                 bridge_mem[node] = filament
-        elif filament[0] not in node_mem.keys() and filament[-1] not in node_mem.keys():
-            if filament[0] not in bridge_mem.keys() and filament[-1] not in bridge_mem.keys():
+        elif filament[0] not in list(node_mem.keys()) and filament[-1] not in list(node_mem.keys()):
+            if filament[0] not in list(bridge_mem.keys()) and filament[-1] not in list(bridge_mem.keys()):
                 isolated_filaments.append(filament)
             else:
                 #Check internal or external
@@ -495,7 +500,7 @@ def connected_components(wed):
 
     """
 
-    nodes = wed['node_edge'].keys()
+    nodes = list(wed['node_edge'].keys())
     components = []
     while nodes:
         start = nodes.pop()
@@ -558,28 +563,28 @@ if __name__ == "__main__":
     
     cycles = regions_from_graph(vertices, edges)
     
-    print "Minimal Cycles: ", cycles['regions']
-    print "Filaments: ", cycles['filaments']
+    print("Minimal Cycles: ", cycles['regions'])
+    print("Filaments: ", cycles['filaments'])
 
     filaments = classify_filaments(cycles['filaments'],cycles['regions'], cycles['edges'], cycles['vertices'])
-    print "Isolated Filaments: ",filaments['isolated']
-    print "Bridge Filaments: ", filaments['bridge']
-    print "Internal Filaments: ", filaments['internal']
-    print "External Filaments: ", filaments['external']
+    print("Isolated Filaments: ",filaments['isolated'])
+    print("Bridge Filaments: ", filaments['bridge'])
+    print("Internal Filaments: ", filaments['internal'])
+    print("External Filaments: ", filaments['external'])
     
     wed = generate_wed(cycles['regions'])
     
-    print wed['node_edge']
+    print(wed['node_edge'])
     
     components = connected_components(wed)
-    print "Components are: ",components
+    print("Components are: ",components)
     
     n2_connected = connected_component(wed, 2)
-    print "Starting at node 2, I visited: ", n2_connected
+    print("Starting at node 2, I visited: ", n2_connected)
     
     n25_connected = connected_component(wed,25)
-    print "I am starting in a hole.  I visited: ", n25_connected
+    print("I am starting in a hole.  I visited: ", n25_connected)
     
     n15_connected = connected_component(wed, 15)
-    print "I am on a disconnected component and visited: ", n15_connected
+    print("I am on a disconnected component and visited: ", n15_connected)
     

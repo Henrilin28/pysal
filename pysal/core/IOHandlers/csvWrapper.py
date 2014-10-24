@@ -1,5 +1,7 @@
+
 import pysal.core.Tables as Tables
 import csv
+from six.moves import range
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ['csvWrapper']

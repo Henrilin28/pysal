@@ -1,7 +1,9 @@
+
 import unittest
 import pysal
 from pysal.spatial_dynamics import rank
 import numpy as np
+from six.moves import range
 
 
 class Theta_Tester(unittest.TestCase):

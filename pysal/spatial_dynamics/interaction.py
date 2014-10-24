@@ -2,6 +2,9 @@
 Methods for identifying space-time interaction in spatio-temporal event
 data.
 """
+
+
+from six.moves import range
 __author__ = "Nicholas Malizia <nmalizia@asu.edu>", "Sergio J. Rey \
 <srey@asu.edu>", "Philip Stephens <philip.stephens@asu.edu"
 
@@ -247,7 +250,7 @@ def knox(s_coords, t_coords, delta, tau, permutations=99, debug=False):
 
     if permutations:
         joint = np.zeros((permutations, 1), int)
-        for p in xrange(permutations):
+        for p in range(permutations):
             np.random.shuffle(t_coords)
             d_t = (t_coords[ids[:, 0]] - t_coords[ids[:, 1]]) ** 2
             joint[p] = np.sum(d_t <= tau2)
@@ -365,7 +368,7 @@ def mantel(s_coords, t_coords, permutations=99, scon=1.0, spow=-1.0, tcon=1.0, t
     # loop for generating a random distribution to assess significance
     dist = []
     for i in range(permutations):
-        trand = util.shuffle_matrix(timemat, range(n))
+        trand = util.shuffle_matrix(timemat, list(range(n)))
         timevec = (util.get_lower(trand) + tcon) ** tpow
         m = stats.pearsonr(timevec, distvec)[0].sum()
         dist.append(m)
@@ -608,7 +611,7 @@ def modified_knox(s_coords, t_coords, delta, tau, permutations=99):
 
     # loop for generating a random distribution to assess significance
     for p in range(permutations):
-        rtdistmat = util.shuffle_matrix(tdistmat, range(n))
+        rtdistmat = util.shuffle_matrix(tdistmat, list(range(n)))
         timemat = np.ones((n, n))
         timebin = rtdistmat <= tau
         timemat = timemat * timebin

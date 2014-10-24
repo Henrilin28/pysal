@@ -3,6 +3,11 @@ PySAL ShapeFile Reader and Writer based on pure python shapefile module.
 
 """
 
+
+from six.moves import map
+from six.moves import range
+from six.moves import zip
+
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __credits__ = "Copyright (c) 2009 Charles R. Schmidt"
 __all__ = ['PurePyShpWrapper']
@@ -154,9 +159,9 @@ class PurePyShpWrapper(pysal.core.FileIO.FileIO):
                 partsIndex = list(rec['Parts Index'])
                 partsIndex.append(None)
                 parts = [rec['Vertices'][partsIndex[i]:partsIndex[
-                    i + 1]] for i in xrange(rec['NumParts'])]
+                    i + 1]] for i in range(rec['NumParts'])]
                 if self.dataObj.type() == 'POLYGON':
-                    is_cw = map(pysal.cg.is_clockwise, parts)
+                    is_cw = list(map(pysal.cg.is_clockwise, parts))
                     vertices = [part for part, cw in zip(parts, is_cw) if cw]
                     holes = [part for part, cw in zip(parts, is_cw) if not cw]
                     if not holes:
@@ -170,7 +175,7 @@ class PurePyShpWrapper(pysal.core.FileIO.FileIO):
                 if self.dataObj.type() == 'POLYGON' and not pysal.cg.is_clockwise(vertices):
                     ### SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)
                     warn("SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)" % (self.pos), RuntimeWarning)
-                    print "SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)" % (self.pos)
+                    print("SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)" % (self.pos))
 
                 shp = self.type(vertices)
             else:

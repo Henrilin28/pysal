@@ -1,8 +1,11 @@
+
 import pysal
 import os.path
 import pysal.core.FileIO as FileIO
 from pysal.weights import W
 from warnings import warn
+from six.moves import range
+from six.moves import zip
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["StataTextIO"]

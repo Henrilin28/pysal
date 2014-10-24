@@ -2,6 +2,7 @@
 Set-like manipulation of weights matrices.
 """
 
+
 __author__ = "Sergio J. Rey <srey@asu.edu>, Charles Schmidt <schmidtc@gmail.com>, David Folch <david.folch@asu.edu>, Dani Arribas-Bel <darribas@asu.edu>"
 
 import pysal
@@ -59,7 +60,7 @@ def w_union(w1, w2, silent_island_warning=False):
     >>>
 
     """
-    neighbors = dict(w1.neighbors.items())
+    neighbors = dict(list(w1.neighbors.items()))
     for i in w2.neighbors:
         if i in neighbors:
             add_neigh = set(neighbors[i]).union(set(w2.neighbors[i]))
@@ -120,7 +121,7 @@ def w_intersection(w1, w2, w_shape='w1', silent_island_warning=False):
 
     """
     if w_shape == 'w1':
-        neigh_keys = w1.neighbors.keys()
+        neigh_keys = list(w1.neighbors.keys())
     elif w_shape == 'all':
         neigh_keys = set(w1.neighbors.keys()).union(set(w2.neighbors.keys()))
     elif w_shape == 'min':
@@ -200,7 +201,7 @@ def w_difference(w1, w2, w_shape='w1', constrained=True, silent_island_warning=F
 
     """
     if w_shape == 'w1':
-        neigh_keys = w1.neighbors.keys()
+        neigh_keys = list(w1.neighbors.keys())
     elif w_shape == 'all':
         neigh_keys = set(w1.neighbors.keys()).union(set(w2.neighbors.keys()))
     elif w_shape == 'min':

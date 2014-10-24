@@ -11,6 +11,10 @@ Author(s):
 
 """
 
+from six.moves import range
+from six.moves import zip
+from functools import reduce
+
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>, David Folch <dfolch@asu.edu>, Luc Anselin <luc.anselin@asu.edu>, Serge Rey <srey@asu.edu"
 
 import pysal
@@ -97,7 +101,7 @@ def weighted_median(d, w):
 
     """
     dtype = [('w', '%s' % w.dtype), ('v', '%s' % d.dtype)]
-    d_w = np.array(zip(w, d), dtype=dtype)
+    d_w = np.array(list(zip(w, d)), dtype=dtype)
     d_w.sort(order='v')
     reordered_w = d_w['w'].cumsum()
     cumsum_threshold = reordered_w[-1] * 1.0 / 2
@@ -364,7 +368,7 @@ def indirect_age_standardization(e, b, s_e, s_b, n, alpha=0.05):
     log_smr_upper = log_smr + norm_thres * log_smr_sd
     smr_lower = np.exp(log_smr_lower) * s_r_all
     smr_upper = np.exp(log_smr_upper) * s_r_all
-    res = zip(adjusted_r, smr_lower, smr_upper)
+    res = list(zip(adjusted_r, smr_lower, smr_upper))
     return res
 
 
@@ -712,7 +716,7 @@ class Spatial_Empirical_Bayes:
         ngh_num = np.ones(len(e))
         bi = slag(w, b) + b
         for i, idv in enumerate(w.id_order):
-            ngh = w[idv].keys() + [idv]
+            ngh = list(w[idv].keys()) + [idv]
             nghi = [w.id2i[k] for k in ngh]
             ngh_num[i] = len(nghi)
             v = sum(np.square(rate[nghi] - r_mean[i]) * b[nghi])
@@ -1201,7 +1205,7 @@ class Spatial_Filtering:
         y_range = bbox[1][1] - bbox[0][1]
         x, y = np.mgrid[bbox[0][0]:bbox[1][0]:x_range / x_grid,
                         bbox[0][1]:bbox[1][1]:y_range / y_grid]
-        self.grid = zip(x.ravel(), y.ravel())
+        self.grid = list(zip(x.ravel(), y.ravel()))
         self.r = []
         if r is None and pop is None:
             raise ValueError("Either r or pop should not be None")
@@ -1359,39 +1363,39 @@ class Headbanging_Triples:
         self.triples, points = {}, {}
         for i, pnt in enumerate(data):
             ng = w.neighbor_offsets[i]
-            points[(i, Point(pnt))] = dict(zip(ng, [Point(d)
-                                                    for d in data[ng]]))
-        for i, pnt in points.keys():
+            points[(i, Point(pnt))] = dict(list(zip(ng, [Point(d)
+                                                    for d in data[ng]])))
+        for i, pnt in list(points.keys()):
             ng = points[(i, pnt)]
             tr, tr_dis = {}, []
-            for c in comb(ng.keys(), 2):
+            for c in comb(list(ng.keys()), 2):
                 p2, p3 = ng[c[0]], ng[c[-1]]
                 ang = get_angle_between(Ray(pnt, p2), Ray(pnt, p3))
                 if ang > angle or (ang < 0.0 and ang + 360 > angle):
                     tr[tuple(c)] = (p2, p3)
             if len(tr) > t:
-                for c in tr.keys():
+                for c in list(tr.keys()):
                     p2, p3 = tr[c]
                     tr_dis.append((get_segment_point_dist(
                         LineSegment(p2, p3), pnt), c))
                 tr_dis = sorted(tr_dis)[:t]
                 self.triples[i] = [trp for dis, trp in tr_dis]
             else:
-                self.triples[i] = tr.keys()
+                self.triples[i] = list(tr.keys())
         if edgecor:
             self.extra = {}
-            ps = dict([(p, i) for i, p in points.keys()])
-            chull = convex_hull(ps.keys())
+            ps = dict([(p, i) for i, p in list(points.keys())])
+            chull = convex_hull(list(ps.keys()))
             chull = [p for p in chull if len(self.triples[ps[p]]) == 0]
             for point in chull:
                 key = (ps[point], point)
                 ng = points[key]
-                ng_dist = [(get_points_dist(point, p), p) for p in ng.values()]
+                ng_dist = [(get_points_dist(point, p), p) for p in list(ng.values())]
                 ng_dist_s = sorted(ng_dist, reverse=True)
                 extra = None
                 while extra is None and len(ng_dist_s) > 0:
                     p2 = ng_dist_s.pop()[-1]
-                    p3s = ng.values()
+                    p3s = list(ng.values())
                     p3s.remove(p2)
                     for p3 in p3s:
                         dist_p2_p3 = get_points_dist(p2, p3)
@@ -1535,7 +1539,7 @@ class Headbanging_Median_Rate:
                 trp_r = r[list(trp)]
                 dtype = [('r', '%s' % trp_r.dtype), ('w',
                                                      '%s' % self.aw.dtype)]
-                trp_r = np.array(zip(trp_r, list(trp)), dtype=dtype)
+                trp_r = np.array(list(zip(trp_r, list(trp))), dtype=dtype)
                 trp_r.sort(order='r')
                 lowest.append(trp_r['r'][0])
                 highest.append(trp_r['r'][-1])
@@ -1566,7 +1570,7 @@ class Headbanging_Median_Rate:
     def __search_headbanging_median(self):
         r, tr = self.r, self.tr
         new_r = []
-        for k in tr.keys():
+        for k in list(tr.keys()):
             screens = self.__get_screens(
                 k, tr[k], weighted=(self.aw is not None))
             new_r.append(self.__get_median_from_screens(screens))

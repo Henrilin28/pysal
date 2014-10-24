@@ -1,7 +1,10 @@
+
+
 #!/usr/bin/python
 #import math
 import pysal
 from pysal.cg.standalone import get_shared_segments
+from six.moves import range
 
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 __all__ = ["QUEEN", "ROOK", "ContiguityWeights_binning",
@@ -84,7 +87,7 @@ class ContiguityWeights_binning:
             shpObj = shpFileObject.get(i)
             bbcache[i] = shpObj.bounding_box[:]
             projBBox = [int((shpObj.bounding_box[:][j] -
-                             minbox[j]) / binWidth[j]) for j in xrange(4)]
+                             minbox[j]) / binWidth[j]) for j in range(4)]
             for j in range(projBBox[0], projBBox[2] + 1):
                 columns[j].add(i)
                 poly2Column[i].add(j)
@@ -96,7 +99,7 @@ class ContiguityWeights_binning:
         if self.wttype == QUEEN:
             # loop over polygons rather than bins
             vertCache = {}
-            for polyId in xrange(numPoly):
+            for polyId in range(numPoly):
                 if polyId not in vertCache:
                     vertCache[polyId] = set(shpFileObject.get(polyId).vertices)
                 idRows = poly2Row[polyId]
@@ -130,13 +133,13 @@ class ContiguityWeights_binning:
             # check for a shared edge
             edgeCache = {}
             # loop over polygons rather than bins
-            for polyId in xrange(numPoly):
+            for polyId in range(numPoly):
                 if polyId not in edgeCache:
                     iEdges = {}
                     iVerts = shpFileObject.get(polyId).vertices
                     nv = len(iVerts)
                     ne = nv - 1
-                    for i in xrange(ne):
+                    for i in range(ne):
                         l = iVerts[i]
                         r = iVerts[i + 1]
                         iEdges[(l, r)] = []
@@ -165,21 +168,21 @@ class ContiguityWeights_binning:
                                 jEdges = {}
                                 nv = len(jVerts)
                                 ne = nv - 1
-                                for e in xrange(ne):
+                                for e in range(ne):
                                     l = jVerts[e]
                                     r = jVerts[e + 1]
                                     jEdges[(l, r)] = []
                                     jEdges[(r, l)] = []
                                 edgeCache[j] = jEdges
                             # for edge in edgeCache[j]:
-                            if iEdgeSet.intersection(edgeCache[j].keys()):
+                            if iEdgeSet.intersection(list(edgeCache[j].keys())):
                                 w[polyId].add(j)
                                 if j not in w:
                                     w[j] = set()
                                 w[j].add(polyId)
                                 # break
         else:
-            print "Unsupported weight type."
+            print("Unsupported weight type.")
 
         self.w = w
 
@@ -243,7 +246,7 @@ class ContiguityWeightsPolygons:
             shpObj = self.collection[i]
             bbcache[i] = shpObj.bbox[:]
             projBBox = [int((shpObj.bbox[:][j] -
-                             minbox[j]) / binWidth[j]) for j in xrange(4)]
+                             minbox[j]) / binWidth[j]) for j in range(4)]
             for j in range(projBBox[0], projBBox[2] + 1):
                 columns[j].add(i)
                 poly2Column[i].add(j)
@@ -255,7 +258,7 @@ class ContiguityWeightsPolygons:
         if self.wttype == QUEEN:
             # loop over polygons rather than bins
             vertCache = {}
-            for polyId in xrange(numPoly):
+            for polyId in range(numPoly):
                 if polyId not in vertCache:
                     vertCache[polyId] = set(self.collection[polyId].vertices)
                 idRows = poly2Row[polyId]
@@ -289,13 +292,13 @@ class ContiguityWeightsPolygons:
             # check for a shared edge
             edgeCache = {}
             # loop over polygons rather than bins
-            for polyId in xrange(numPoly):
+            for polyId in range(numPoly):
                 if polyId not in edgeCache:
                     iEdges = {}
                     iVerts = shpFileObject.get(polyId).vertices
                     nv = len(iVerts)
                     ne = nv - 1
-                    for i in xrange(ne):
+                    for i in range(ne):
                         l = iVerts[i]
                         r = iVerts[i + 1]
                         iEdges[(l, r)] = []
@@ -324,66 +327,66 @@ class ContiguityWeightsPolygons:
                                 jEdges = {}
                                 nv = len(jVerts)
                                 ne = nv - 1
-                                for e in xrange(ne):
+                                for e in range(ne):
                                     l = jVerts[e]
                                     r = jVerts[e + 1]
                                     jEdges[(l, r)] = []
                                     jEdges[(r, l)] = []
                                 edgeCache[j] = jEdges
                             # for edge in edgeCache[j]:
-                            if iEdgeSet.intersection(edgeCache[j].keys()):
+                            if iEdgeSet.intersection(list(edgeCache[j].keys())):
                                 w[polyId].add(j)
                                 if j not in w:
                                     w[j] = set()
                                 w[j].add(polyId)
                                 # break
         else:
-            print "Unsupported weight type."
+            print("Unsupported weight type.")
 
         self.w = w
 
 if __name__ == "__main__":
     import time
     fname = pysal.examples.get_path('NAT.shp')
-    print 'QUEEN binning'
+    print('QUEEN binning')
     t0 = time.time()
     qb = ContiguityWeights_binning(pysal.open(fname), QUEEN)
     t1 = time.time()
-    print "using " + str(fname)
-    print "time elapsed for queen... using bins: " + str(t1 - t0)
+    print("using " + str(fname))
+    print("time elapsed for queen... using bins: " + str(t1 - t0))
 
     t0 = time.time()
     rb = ContiguityWeights_binning(pysal.open(fname), ROOK)
     t1 = time.time()
-    print 'Rook binning'
-    print "using " + str(fname)
-    print "time elapsed for rook... using bins: " + str(t1 - t0)
+    print('Rook binning')
+    print("using " + str(fname))
+    print("time elapsed for rook... using bins: " + str(t1 - t0))
 
-    from _contW_rtree import ContiguityWeights_rtree
+    from ._contW_rtree import ContiguityWeights_rtree
 
     t0 = time.time()
     rt = ContiguityWeights_rtree(pysal.open(fname), ROOK)
     t1 = time.time()
 
-    print "time elapsed for rook... using rtree: " + str(t1 - t0)
-    print rt.w == rb.w
+    print("time elapsed for rook... using rtree: " + str(t1 - t0))
+    print(rt.w == rb.w)
 
-    print 'QUEEN'
+    print('QUEEN')
     t0 = time.time()
     qt = ContiguityWeights_rtree(pysal.open(fname), QUEEN)
     t1 = time.time()
-    print "using " + str(fname)
-    print "time elapsed for queen... using rtree: " + str(t1 - t0)
-    print qb.w == qt.w
+    print("using " + str(fname))
+    print("time elapsed for queen... using rtree: " + str(t1 - t0))
+    print(qb.w == qt.w)
 
-    print 'knn4'
+    print('knn4')
     t0 = time.time()
     knn = pysal.knnW_from_shapefile(fname, k=4)
     t1 = time.time()
-    print t1 - t0
+    print(t1 - t0)
 
-    print 'rook from shapefile'
+    print('rook from shapefile')
     t0 = time.time()
     knn = pysal.rook_from_shapefile(fname)
     t1 = time.time()
-    print t1 - t0
+    print(t1 - t0)

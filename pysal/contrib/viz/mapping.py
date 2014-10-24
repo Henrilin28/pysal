@@ -7,6 +7,8 @@ ToDo:
 
 """
 
+from six.moves import zip
+
 __author__ = "Sergio Rey <sjsrey@gmail.com>", "Dani Arribas-Bel <daniel.arribas.bel@gmail.com"
 
 

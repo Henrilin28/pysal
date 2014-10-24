@@ -8,6 +8,11 @@ Readers and Writers will mimic python file objects.
 .next() reads the next object
 """
 
+
+import six
+from six.moves import range
+from six.moves import zip
+
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
 __all__ = ['FileIO']
@@ -34,7 +39,7 @@ class FileIO_MetaCls(type):
         return cls
 
 
-class FileIO(object):  # should be a type?
+class FileIO(six.with_metaclass(FileIO_MetaCls, object)):  # should be a type?
     """
     How this works:
     FileIO.open(\*args) == FileIO(\*args)
@@ -51,7 +56,6 @@ class FileIO(object):  # should be a type?
     ....for now we'll just return an instance of W on mode='r'
     .... on mode='w', .write will expect an instance of W
     """
-    __metaclass__ = FileIO_MetaCls
     __registry = {}  # {'shp':{'r':[OGRshpReader,pysalShpReader]}}
 
     def __new__(cls, dataPath='', mode='r', dataFormat=None):
@@ -111,9 +115,9 @@ class FileIO(object):  # should be a type?
     @classmethod
     def check(cls):
         """ Prints the contents of the registry """
-        print "PySAL File I/O understands the following file extensions:"
-        for key, val in cls.__registry.iteritems():
-            print "Ext: '.%s', Modes: %r" % (key, val.keys())
+        print("PySAL File I/O understands the following file extensions:")
+        for key, val in six.iteritems(cls.__registry):
+            print("Ext: '.%s', Modes: %r" % (key, list(val.keys())))
 
     @classmethod
     def open(cls, *args, **kwargs):
@@ -128,7 +132,7 @@ class FileIO(object):  # should be a type?
             if not self.p.ids:
                 return "keys: range(0,n)"
             else:
-                return "keys: " + self.p.ids.keys().__repr__()
+                return "keys: " + list(self.p.ids.keys()).__repr__()
 
         def __getitem__(self, key):
             if type(key) == list:
@@ -190,7 +194,7 @@ class FileIO(object):  # should be a type?
         elif isinstance(ids, dict):
             self.__ids = ids
             self.__rIds = {}
-            for id, n in ids.iteritems():
+            for id, n in six.iteritems(ids):
                 self.__rIds[n] = id
         elif not ids:
             self.__ids = None
@@ -246,7 +250,7 @@ class FileIO(object):  # should be a type?
         else:
             return row
 
-    def next(self):
+    def __next__(self):
         """A FileIO object is its own iterator, see StringIO"""
         self._complain_ifclosed(self.closed)
         r = self.__read()

@@ -1,3 +1,4 @@
+
 import pysal
 import os.path
 import scipy.io as sio
@@ -5,6 +6,7 @@ import pysal.core.FileIO as FileIO
 from pysal.weights import W, WSP
 from pysal.weights.util import full, full2W
 from warnings import warn
+from six.moves import range
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["MtxIO"]
@@ -129,7 +131,7 @@ class MtxIO(FileIO.FileIO):
         if self.pos > 0:
             raise StopIteration
         mtx = sio.mmread(self.file)
-        ids = range(1, mtx.shape[0] + 1)  # matrix market indexes start at one
+        ids = list(range(1, mtx.shape[0] + 1))  # matrix market indexes start at one
         wsp = WSP(mtx, ids)
         if self._sparse:
             w = wsp

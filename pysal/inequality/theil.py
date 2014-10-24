@@ -1,6 +1,8 @@
 """Theil Inequality metrics
 
 """
+
+from six.moves import range
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
 from pysal.common import *

@@ -2,6 +2,8 @@
 Spatial autocorrelation for binary attributes
 
 """
+
+from six.moves import range
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
 import pysal
@@ -113,7 +115,7 @@ class Join_Counts:
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.y))
-                   for i in xrange(permutations)]
+                   for i in range(permutations)]
             sim_jc = np.array(sim)
             self.sim_bb = sim_jc[:, 0]
             self.min_bb = np.min(self.sim_bb)

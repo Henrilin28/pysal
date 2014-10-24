@@ -3,12 +3,14 @@ KDTree for PySAL: Python Spatial Analysis Library.
 
 Adds support for Arc Distance to scipy.spatial.KDTree.
 """
+
 import sys
 import math
 import scipy.spatial
 import numpy
 from scipy import inf
-import sphere
+from . import sphere
+from six.moves import map
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 DISTANCE_METRICS = ['Euclidean', 'Arc']
@@ -39,7 +41,7 @@ class Arc_KDTree(scipy.spatial.KDTree):
         """
         self.radius = radius
         self.circumference = 2 * math.pi * radius
-        scipy.spatial.KDTree.__init__(self, map(sphere.toXYZ, data), leafsize)
+        scipy.spatial.KDTree.__init__(self, list(map(sphere.toXYZ, data)), leafsize)
 
     def _toXYZ(self, x):
         if not issubclass(type(x), numpy.ndarray):
@@ -51,7 +53,7 @@ class Arc_KDTree(scipy.spatial.KDTree):
         elif len(x.shape) == 1:
             x = numpy.array(sphere.toXYZ(x))
         else:
-            x = map(sphere.toXYZ, x)
+            x = list(map(sphere.toXYZ, x))
         return x
 
     def count_neighbors(self, other, r, p=2):
@@ -233,7 +235,7 @@ class Arc_KDTree(scipy.spatial.KDTree):
         #print D.data
         a2l = lambda x: sphere.linear2arcdist(x, self.radius)
         #print map(a2l,D.data)
-        return scipy.sparse.coo_matrix((map(a2l, D.data), (D.row, D.col))).todok()
+        return scipy.sparse.coo_matrix((list(map(a2l, D.data)), (D.row, D.col))).todok()
 
 
 def KDTree(data, leafsize=10, distance_metric='Euclidean', radius=1.0):

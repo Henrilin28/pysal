@@ -1,6 +1,9 @@
 """
 Checking for connected components in a graph.
 """
+
+
+import six
 __author__ = "Sergio J. Rey <srey@asu.edu>"
 
 
@@ -123,7 +126,7 @@ class Graph(object):
         if not self.undirected:
             warn = "Warning, connected _components not "
             warn += "defined for a directed graph"
-            print warn
+            print(warn)
             return None
         else:
             nodes = set(self.nodes)
@@ -139,7 +142,7 @@ class Graph(object):
                 subgraph.nodes = connected
                 subgraph.no_link = self.no_link
                 for s in subgraph.nodes:
-                    for k, v in self.edges.get(s, {}).iteritems():
+                    for k, v in six.iteritems(self.edges.get(s, {})):
                         if k in subgraph.nodes:
                             subgraph.edges.setdefault(s, {}).update({k: v})
                     if s in self.cluster_lookup:
@@ -152,7 +155,7 @@ class Graph(object):
         visited.add(v)
         if first is None:
             first = v
-        for i in (n for n, w in self.edges.get(v, {}).iteritems()
+        for i in (n for n, w in six.iteritems(self.edges.get(v, {}))
                   if op(w, threshold) and n not in visited):
             x, y = self.dfs(i, visited, threshold, op, first)
             aux.extend(x)

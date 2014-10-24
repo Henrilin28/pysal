@@ -1,7 +1,9 @@
+
 import unittest
 import pysal
 import numpy as np
 from pysal.inequality.theil import *
+from six.moves import range
 
 
 class test_Theil(unittest.TestCase):

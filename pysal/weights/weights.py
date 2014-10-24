@@ -1,3 +1,8 @@
+
+
+import six
+from six.moves import range
+from six.moves import zip
 __all__ = ['W', 'WSP']
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
@@ -129,7 +134,7 @@ class W(object):
         self.transformations['O'] = self.weights.copy()  # original weights
         self.transform = 'O'
         if id_order is None:
-            self._id_order = self.neighbors.keys()
+            self._id_order = list(self.neighbors.keys())
             self._id_order.sort()
             self._id_order_set = False
         else:
@@ -140,11 +145,11 @@ class W(object):
         if self.islands and not self.silent_island_warning:
             ni = len(self.islands)
             if ni == 1:
-                print "WARNING: there is one disconnected observation (no neighbors)"
-                print "Island id: ", self.islands
+                print("WARNING: there is one disconnected observation (no neighbors)")
+                print("Island id: ", self.islands)
             else:
-                print "WARNING: there are %d disconnected observations" % ni
-                print "Island ids: ", self.islands
+                print("WARNING: there are %d disconnected observations" % ni)
+                print("Island ids: ", self.islands)
 
     def _reset(self):
         """
@@ -174,7 +179,7 @@ class W(object):
         col = []
         data = []
         id2i = self.id2i
-        for i, neigh_list in self.neighbor_offsets.iteritems():
+        for i, neigh_list in six.iteritems(self.neighbor_offsets):
             card = self.cardinalities[i]
             row.extend([id2i[i]] * card)
             col.extend(neigh_list)
@@ -394,7 +399,7 @@ class W(object):
         average number of neighbors
         """
         if 'mean_neighbors' not in self._cache:
-            self._mean_neighbors = np.mean(self.cardinalities.values())
+            self._mean_neighbors = np.mean(list(self.cardinalities.values()))
             self._cache['mean_neighbors'] = self._mean_neighbors
         return self._mean_neighbors
 
@@ -424,7 +429,7 @@ class W(object):
         standard deviation of number of neighbors : float
         """
         if 'sd' not in self._cache:
-            self._sd = np.std(self.cardinalities.values())
+            self._sd = np.std(list(self.cardinalities.values()))
             self._cache['sd'] = self._sd
         return self._sd
 
@@ -445,7 +450,7 @@ class W(object):
         """
         if 'islands' not in self._cache:
             self._islands = [i for i,
-                             c in self.cardinalities.items() if c == 0]
+                             c in list(self.cardinalities.items()) if c == 0]
             self._cache['islands'] = self._islands
         return self._islands
 
@@ -456,9 +461,9 @@ class W(object):
         number of neighbors for that unit
         """
         if 'histogram' not in self._cache:
-            ct, bin = np.histogram(self.cardinalities.values(),
-                                   range(self.min_neighbors, self.max_neighbors + 2))
-            self._histogram = zip(bin, ct)
+            ct, bin = np.histogram(list(self.cardinalities.values()),
+                                   list(range(self.min_neighbors, self.max_neighbors + 2)))
+            self._histogram = list(zip(bin, ct))
             self._cache['histogram'] = self._histogram
         return self._histogram
 
@@ -477,7 +482,7 @@ class W(object):
         >>> w[0]
         {1: 1.0, 4: 1.0, 101: 1.0, 85: 1.0, 5: 1.0}
         """
-        return dict(zip(self.neighbors[key], self.weights[key]))
+        return dict(list(zip(self.neighbors[key], self.weights[key])))
 
     def __iter__(self):
         """
@@ -502,7 +507,7 @@ class W(object):
         >>>
         """
         for i in self._id_order:
-            yield i, dict(zip(self.neighbors[i], self.weights[i]))
+            yield i, dict(list(zip(self.neighbors[i], self.weights[i])))
 
     def remap_ids(self, new_ids):
         '''
@@ -673,7 +678,7 @@ class W(object):
         if "neighbors_0" not in self._cache:
             self.__neighbors_0 = {}
             id2i = self.id2i
-            for j, neigh_list in self.neighbors.iteritems():
+            for j, neigh_list in six.iteritems(self.neighbors):
                 self.__neighbors_0[j] = [id2i[neigh] for neigh in neigh_list]
             self._cache['neighbors_0'] = self.__neighbors_0
         return self.__neighbors_0
@@ -762,7 +767,7 @@ class W(object):
                     row_sum = sum(wijs) * 1.0
                     if row_sum == 0.0:
                         if not self.silent_island_warning:
-                            print 'WARNING: ', i, ' is an island (no neighbors)'
+                            print('WARNING: ', i, ' is an island (no neighbors)')
                     weights[i] = [wij / row_sum for wij in wijs]
                 weights = weights
                 self.transformations[value] = weights
@@ -821,7 +826,7 @@ class W(object):
                 self.weights = original
                 self._reset()
             else:
-                print 'unsupported weights transformation'
+                print('unsupported weights transformation')
 
     transform = property(get_transform, set_transform)
 
@@ -878,7 +883,7 @@ class W(object):
         if len(ids[0]) == 0:
             return []
         else:
-            ijs = zip(ids[0], ids[1])
+            ijs = list(zip(ids[0], ids[1]))
             ijs.sort()
             return ijs
 

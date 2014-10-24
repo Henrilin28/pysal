@@ -1,6 +1,9 @@
 """
 Geary's C statistic for spatial autocorrelation
 """
+
+from six.moves import range
+from six.moves import zip
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
 import numpy as np
@@ -88,7 +91,7 @@ class Geary:
         self.w = w
         self.permutations = permutations
         self.__moments()
-        xn = xrange(len(y))
+        xn = list(range(len(y)))
         self.xn = xn
         self.y2 = y * y
         yd = y - y.mean()
@@ -109,7 +112,7 @@ class Geary:
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.y))
-                   for i in xrange(permutations)]
+                   for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.C
             larger = sum(above)
@@ -152,7 +155,7 @@ class Geary:
         for i, i0 in enumerate(self.w.id_order):
             neighbors = self.w.neighbor_offsets[i0]
             wijs = self.w.weights[i0]
-            z = zip(neighbors, wijs)
+            z = list(zip(neighbors, wijs))
             ys[i] = sum([wij * (y2[i] - 2 * y[i] * y[j] + y2[j])
                          for j, wij in z])
         a = (self.n - 1) * sum(ys)

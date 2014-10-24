@@ -1,20 +1,22 @@
+
 # IO handlers for network module go here
 
-import cPickle
+import six.moves.cPickle
 import json
 import ast
 import os
 import pysal as ps
-from data import WED
+from .data import WED
+import six
 
 
 def wed_to_json(wed, outfile, binary=True):
     #keys need to be strings
     new_wed = {}
-    for key, value in vars(wed).iteritems():
+    for key, value in six.iteritems(vars(wed)):
         nested_attr = {}
         if isinstance(value, dict):
-            for k2, v2 in value.iteritems():
+            for k2, v2 in six.iteritems(value):
                 nested_attr[str(k2)] = v2
             new_wed[key] = nested_attr
         else:
@@ -22,7 +24,7 @@ def wed_to_json(wed, outfile, binary=True):
     #print new_wed['edge_list']
     if binary:
         with open(outfile, 'w') as outfile:
-            outfile.write(cPickle.dumps(new_wed, 1))
+            outfile.write(six.moves.cPickle.dumps(new_wed, 1))
     else:
         with open(outfile, 'w') as outfile:
             json_str = json.dumps(new_wed, sort_keys=True, indent=4)
@@ -33,22 +35,22 @@ def wed_from_json(infile, binary=True):
     wed = WED()
     if binary:
         with open(infile, 'r') as f:
-            data = cPickle.load(f)
+            data = six.moves.cPickle.load(f)
     else:
         with open(infile, 'r') as f:
             data = json.loads(f)
 
-    wed.start_c = {ast.literal_eval(key):value for key, value in data['start_c'].iteritems()}
-    wed.start_cc = {ast.literal_eval(key):value for key, value in data['start_cc'].iteritems()}
-    wed.end_c = {ast.literal_eval(key):value for key, value in data['end_c'].iteritems()}
-    wed.end_cc = {ast.literal_eval(key):value for key, value in data['end_cc'].iteritems()}
-    wed.region_edge = {ast.literal_eval(key):value for key, value in data['region_edge'].iteritems()}
-    wed.node_edge = {ast.literal_eval(key):value for key, value in data['node_edge'].iteritems()}
-    wed.right_polygon = {ast.literal_eval(key):value for key, value in data['right_polygon'].iteritems()}
-    wed.left_polygon = {ast.literal_eval(key):value for key, value in data['left_polygon'].iteritems()}
-    wed.start_node = {ast.literal_eval(key):value for key, value in data['start_node'].iteritems()}
-    wed.end_node = {ast.literal_eval(key):value for key, value in data['end_node'].iteritems()}
-    wed.node_coords = {ast.literal_eval(key):value for key, value in data['node_coords'].iteritems()}
+    wed.start_c = {ast.literal_eval(key):value for key, value in six.iteritems(data['start_c'])}
+    wed.start_cc = {ast.literal_eval(key):value for key, value in six.iteritems(data['start_cc'])}
+    wed.end_c = {ast.literal_eval(key):value for key, value in six.iteritems(data['end_c'])}
+    wed.end_cc = {ast.literal_eval(key):value for key, value in six.iteritems(data['end_cc'])}
+    wed.region_edge = {ast.literal_eval(key):value for key, value in six.iteritems(data['region_edge'])}
+    wed.node_edge = {ast.literal_eval(key):value for key, value in six.iteritems(data['node_edge'])}
+    wed.right_polygon = {ast.literal_eval(key):value for key, value in six.iteritems(data['right_polygon'])}
+    wed.left_polygon = {ast.literal_eval(key):value for key, value in six.iteritems(data['left_polygon'])}
+    wed.start_node = {ast.literal_eval(key):value for key, value in six.iteritems(data['start_node'])}
+    wed.end_node = {ast.literal_eval(key):value for key, value in six.iteritems(data['end_node'])}
+    wed.node_coords = {ast.literal_eval(key):value for key, value in six.iteritems(data['node_coords'])}
     wed.edge_list = data['edge_list']
 
     return wed

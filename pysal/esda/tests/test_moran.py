@@ -1,3 +1,4 @@
+
 import unittest
 import pysal
 from pysal.esda import moran
@@ -12,16 +13,16 @@ class Moran_Tester(unittest.TestCase):
 
     def test_moran(self):
         mi = moran.Moran(self.y, self.w, two_tailed=False)
-        self.assertAlmostEquals(mi.I, 0.24365582621771659, 7)
-        self.assertAlmostEquals(mi.p_norm,0.00013573931385468807)
+        self.assertAlmostEqual(mi.I, 0.24365582621771659, 7)
+        self.assertAlmostEqual(mi.p_norm,0.00013573931385468807)
 
     def test_sids(self):
         w = pysal.open(pysal.examples.get_path("sids2.gal")).read()
         f = pysal.open(pysal.examples.get_path("sids2.dbf"))
         SIDR = np.array(f.by_col("SIDR74"))
         mi = pysal.Moran(SIDR, w, two_tailed=False)
-        self.assertAlmostEquals(mi.I, 0.24772519320480135)
-        self.assertAlmostEquals(mi.p_norm,  5.7916539074498452e-05)
+        self.assertAlmostEqual(mi.I, 0.24772519320480135)
+        self.assertAlmostEqual(mi.p_norm,  5.7916539074498452e-05)
 
 
 class Moran_Rate_Tester(unittest.TestCase):
@@ -33,8 +34,8 @@ class Moran_Rate_Tester(unittest.TestCase):
 
     def test_moran_rate(self):
         mi = moran.Moran_Rate(self.e, self.b, self.w, two_tailed=False)
-        self.assertAlmostEquals(mi.I, 0.16622343552567395, 7)
-        self.assertAlmostEquals(mi.p_norm, 0.004191499504892171)
+        self.assertAlmostEqual(mi.I, 0.16622343552567395, 7)
+        self.assertAlmostEqual(mi.p_norm, 0.004191499504892171)
 
 
 class Moran_BV_matrix_Tester(unittest.TestCase):
@@ -48,8 +49,8 @@ class Moran_BV_matrix_Tester(unittest.TestCase):
 
     def test_Moran_BV_matrix(self):
         res = moran.Moran_BV_matrix(self.vars, self.w, varnames=self.names)
-        self.assertAlmostEquals(res[(0, 1)].I, 0.19362610652874668)
-        self.assertAlmostEquals(res[(3, 0)].I, 0.37701382542927858)
+        self.assertAlmostEqual(res[(0, 1)].I, 0.19362610652874668)
+        self.assertAlmostEqual(res[(3, 0)].I, 0.37701382542927858)
 
 
 class Moran_Local_Tester(unittest.TestCase):
@@ -62,9 +63,9 @@ class Moran_Local_Tester(unittest.TestCase):
     def test_Moran_Local(self):
         lm = moran.Moran_Local(
             self.y, self.w, transformation="r", permutations=99)
-        self.assertAlmostEquals(lm.z_sim[0], -0.081383956359666748)
-        self.assertAlmostEquals(lm.p_z_sim[0], 0.46756830387716064)
-        self.assertAlmostEquals(lm.VI_sim, 0.2067126047680822)
+        self.assertAlmostEqual(lm.z_sim[0], -0.081383956359666748)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.46756830387716064)
+        self.assertAlmostEqual(lm.VI_sim, 0.2067126047680822)
 
 
 class Moran_Local_Rate_Tester(unittest.TestCase):
@@ -78,9 +79,9 @@ class Moran_Local_Rate_Tester(unittest.TestCase):
     def test_moran_rate(self):
         lm = moran.Moran_Local_Rate(self.e, self.b, self.w,
                                     transformation="r", permutations=99)
-        self.assertAlmostEquals(lm.z_sim[0], -0.27099998923550017)
-        self.assertAlmostEquals(lm.p_z_sim[0], 0.39319552026912641)
-        self.assertAlmostEquals(lm.VI_sim, 0.21879403675396222)
+        self.assertAlmostEqual(lm.z_sim[0], -0.27099998923550017)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.39319552026912641)
+        self.assertAlmostEqual(lm.VI_sim, 0.21879403675396222)
 
 
 suite = unittest.TestSuite()

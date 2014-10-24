@@ -18,11 +18,14 @@ TODO
   directory
 - have wmd_reader take either a wmd file or a wmd dictionary/object
 """
+
+
+from six.moves import range
 __author__ = "Sergio J. Rey <srey@asu.edu>, Wenwen Li <wenwen@asu.edu>"
 import pysal as ps
 import io, json
-import httplib
-from urlparse import urlparse
+import six.moves.http_client
+from urllib.parse import urlparse
 import urllib2 as urllib
 import copy
 import numpy as np
@@ -52,7 +55,7 @@ def wmd_reader(fileName):
                 w = _wmd_parser(meta_data)
                 return w
         except:
-            print 'wmd_reader failed: ', fileName
+            print('wmd_reader failed: ', fileName)
 
 class WMD(ps.W):
     """Weights Meta Data Class"""
@@ -102,7 +105,7 @@ def _wmd_writer(wmd_object, fileName, data=False):
                     indent=4,
                     separators=(',', ': '))
     except:
-        print 'wmd_writer failed.'
+        print('wmd_writer failed.')
 
 def _block(arg_dict):
     """
@@ -165,7 +168,7 @@ def _contiguity(arg_dict):
     elif weight_type == 'queen':
         w = ps.queen_from_shapefile(uri)
     else:
-        print "Unsupported contiguity criterion: ",weight_type
+        print("Unsupported contiguity criterion: ",weight_type)
         return None
     if 'parameters' in arg_dict:
         order = arg_dict['parameters'].get('order',1) # default to 1st order
@@ -174,7 +177,7 @@ def _contiguity(arg_dict):
             w_orig = w
             w = ps.higher_order(w,order)
             if lower:
-                for o in xrange(order-1,1,-1):
+                for o in range(order-1,1,-1):
                     w = ps.weights.w_union(ps.higher_order(w_orig,o), w)
                 w = ps.weights.w_union(w, w_orig)
         parameters = arg_dict['parameters']
@@ -230,7 +233,7 @@ def _kernel(arg_dict):
     elif weight_type == 'kernel':
         w = ps.kernelW_from_shapefile(uri, k=k, function = function)
     else:
-        print "Unsupported kernel: ",weight_type
+        print("Unsupported kernel: ",weight_type)
         return None
     w = WMD(w.neighbors, w.weights)
     w.meta_data = {}
@@ -338,7 +341,7 @@ WEIGHT_TYPES['intersection'] = _intersection
 
 
 def _uri_reader(uri):
-    j = json.load(urllib.urlopen(uri))
+    j = json.load(urllib.request.urlopen(uri))
     return j
 
 def _wmd_read_only(fileName):
@@ -350,7 +353,7 @@ def _wmd_read_only(fileName):
                 meta_data = json.load(fp)
                 return meta_data
         except:
-            print '_wmd_read_only failed: ', fileName
+            print('_wmd_read_only failed: ', fileName)
 
 def _wmd_parser(wmd_object):
     if 'root' in wmd_object:
@@ -383,7 +386,7 @@ def _wmd_parser(wmd_object):
         wmd  = WEIGHT_TYPES[weight_type](wmd_object)
         wmd.meta_data = fullmeta
     else:
-        print 'Unsupported weight type: ', weight_type
+        print('Unsupported weight type: ', weight_type)
 
     return wmd
 
@@ -397,7 +400,7 @@ def _download_shapefiles(file_name):
         file_parts[-1] = file_name
         new_url = "/".join(file_parts)
         #print file_name, new_url
-        u = urllib.urlopen(new_url)
+        u = urllib.request.urlopen(new_url)
         f = open(file_name, 'wb')
         meta = u.info()
         file_size = int(meta.getheaders("Content-Length")[0])

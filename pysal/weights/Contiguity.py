@@ -2,12 +2,13 @@
 Contiguity based spatial weights
 """
 
+
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 __all__ = ['buildContiguity']
 
 import pysal
-from _contW_binning import ContiguityWeights_binning as ContiguityWeights
-from _contW_binning import ContiguityWeightsPolygons
+from ._contW_binning import ContiguityWeights_binning as ContiguityWeights
+from ._contW_binning import ContiguityWeightsPolygons
 
 
 WT_TYPE = {'rook': 2, 'queen': 1}  # for _contW_Binning

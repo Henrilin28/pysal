@@ -35,6 +35,7 @@ Utilities
 `fileio`_
     Tool for file input and output, supports many well known file formats
 """
+
 import pysal.cg
 import pysal.core
 

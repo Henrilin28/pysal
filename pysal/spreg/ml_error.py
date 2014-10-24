@@ -2,17 +2,18 @@
 ML Estimation of Spatial Error Model
 """
 
+
 __author__ = "Luc Anselin luc.anselin@asu.edu, Serge Rey srey@asu.edu"
 
 import numpy as np
 import numpy.linalg as la
 import pysal as ps
 from pysal.spreg.utils import RegressionPropsY, RegressionPropsVM
-import diagnostics as DIAG
-import user_output as USER
-import summary_output as SUMMARY
-import regimes as REGI
-from w_utils import symmetrize
+from . import diagnostics as DIAG
+from . import user_output as USER
+from . import summary_output as SUMMARY
+from . import regimes as REGI
+from .w_utils import symmetrize
 try:
     from scipy.optimize import minimize_scalar
     minimize_scalar_available = True
@@ -190,7 +191,7 @@ class BaseML_Error(RegressionPropsY, RegressionPropsVM, REGI.Regimes_Frame):
                           xlag, evals), method='bounded',
                     tol=epsilon)
         else:
-            raise Exception, "{0} is an unsupported method".format(method)
+            raise Exception("{0} is an unsupported method".format(method))
 
         self.lam = res.x
 
@@ -457,7 +458,7 @@ class ML_Error(BaseML_Error):
             self.schwarz = DIAG.schwarz(reg=self)
             SUMMARY.ML_Error(reg=self, w=w, vm=vm, spat_diag=spat_diag)
         else:
-            raise Exception, "{0} is an unsupported method".format(method)
+            raise Exception("{0} is an unsupported method".format(method))
 
 
 def err_c_loglik(lam, n, y, ylag, x, xlag, W):

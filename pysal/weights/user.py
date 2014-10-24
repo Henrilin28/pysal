@@ -3,13 +3,15 @@ Convenience functions for the construction of spatial weights based on
 contiguity and distance criteria
 """
 
+from six.moves import range
+
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 __all__ = ['queen_from_shapefile', 'rook_from_shapefile', 'knnW_from_array', 'knnW_from_shapefile', 'threshold_binaryW_from_array', 'threshold_binaryW_from_shapefile', 'threshold_continuousW_from_array', 'threshold_continuousW_from_shapefile', 'kernelW', 'kernelW_from_shapefile', 'adaptive_kernelW', 'adaptive_kernelW_from_shapefile', 'min_threshold_dist_from_shapefile', 'build_lattice_shapefile']
 
 import pysal
-from Contiguity import buildContiguity
-from Distance import knnW, Kernel, DistanceBand
-from util import get_ids, get_points_array_from_shapefile, min_threshold_distance
+from .Contiguity import buildContiguity
+from .Distance import knnW, Kernel, DistanceBand
+from .util import get_ids, get_points_array_from_shapefile, min_threshold_distance
 import numpy as np
 
 def queen_from_shapefile(shapefile, idVariable=None, sparse=False):
@@ -1096,8 +1098,8 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
     d.header = [ 'ID' ]
     d.field_spec = [ ('N', 8, 0) ]
     c = 0
-    for i in xrange(nrows):
-        for j in xrange(ncols):
+    for i in range(nrows):
+        for j in range(ncols):
             ll = i, j
             ul = i, j + 1
             ur = i + 1, j + 1

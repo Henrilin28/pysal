@@ -1,2 +1,3 @@
-from wkt import *
-from shapefile import *
+
+from .wkt import *
+from .shapefile import *

@@ -1,4 +1,6 @@
+
 import pysal.core.Tables as Tables
+from six.moves import range
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ['GeoDaTxtReader']

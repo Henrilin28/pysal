@@ -1,7 +1,9 @@
+
 import unittest
 import pysal
 from pysal.spatial_dynamics import util
 import numpy as np
+from six.moves import range
 
 
 class ShuffleMatrix_Tester(unittest.TestCase):
@@ -11,7 +13,7 @@ class ShuffleMatrix_Tester(unittest.TestCase):
 
     def test_shuffle_matrix(self):
         np.random.seed(10)
-        obs = util.shuffle_matrix(self.X, range(4)).flatten().tolist()
+        obs = util.shuffle_matrix(self.X, list(range(4))).flatten().tolist()
         exp = [10, 8, 11, 9, 2, 0, 3, 1, 14, 12, 15, 13, 6, 4, 7, 5]
         for i in range(16):
             self.assertEqual(exp[i], obs[i])

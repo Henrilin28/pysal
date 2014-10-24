@@ -2,17 +2,19 @@
 ML Estimation of Spatial Lag Model
 """
 
+
+
 __author__ = "Luc Anselin luc.anselin@asu.edu, Serge Rey srey@asu.edu"
 
 import numpy as np
 import numpy.linalg as la
 import pysal as ps
 from pysal.spreg.utils import RegressionPropsY, RegressionPropsVM, inverse_prod
-from utils import spdot
-import diagnostics as DIAG
-import user_output as USER
-import summary_output as SUMMARY
-from w_utils import symmetrize
+from .utils import spdot
+from . import diagnostics as DIAG
+from . import user_output as USER
+from . import summary_output as SUMMARY
+from .w_utils import symmetrize
 try:
     from scipy.optimize import minimize_scalar
     minimize_scalar_available = True
@@ -213,7 +215,7 @@ class BaseML_Lag(RegressionPropsY, RegressionPropsVM):
                                       tol=epsilon)
         else:
             # program will crash, need to catch
-            print "{0} is an unsupported method".format(methodML)
+            print("{0} is an unsupported method".format(methodML))
             self = None
             return
 
@@ -556,7 +558,7 @@ class ML_Lag(BaseML_Lag):
             self.schwarz = DIAG.schwarz(reg=self)
             SUMMARY.ML_Lag(reg=self, w=w, vm=vm, spat_diag=spat_diag)
         else:
-            raise Exception, "{0} is an unsupported method".format(method)
+            raise Exception("{0} is an unsupported method".format(method))
 
 def lag_c_loglik(rho, n, e0, e1, W):
     # concentrated log-lik for lag model, no constants, brute force

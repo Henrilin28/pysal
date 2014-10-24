@@ -6,6 +6,8 @@ This module is a python translation of mixlag function
 in CAMAN R package that is originally written by Peter Schlattmann.
 """
 
+from six.moves import range
+
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>, Luc Anselin <luc.anselin@asu.edu>, Serge Rey <srey@asu.edu"
 
 import numpy as np

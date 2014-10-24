@@ -1,3 +1,4 @@
+
 import numpy as np
 import pysal as ps
 import scipy.sparse as SPARSE

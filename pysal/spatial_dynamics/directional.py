@@ -2,6 +2,8 @@
 Directional Analysis of Dynamic LISAs
 
 """
+
+from six.moves import range
 __author__ = "Sergio J. Rey <srey@asu.edu"
 
 __all__ = ['rose']

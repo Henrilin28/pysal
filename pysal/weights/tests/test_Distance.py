@@ -1,7 +1,10 @@
+
 import os
 import unittest
 import pysal
 import numpy as np
+from six.moves import map
+from six.moves import range
 
 
 class TestDistanceWeights(unittest.TestCase):
@@ -36,8 +39,8 @@ class TestDistanceWeights(unittest.TestCase):
     def test_knnW_arc(self):
         pts = [x.centroid for x in pysal.open(self.arcShp)]
         dist = pysal.cg.sphere.arcdist  # default radius is Earth KM
-        full = np.matrix([[dist(pts[i], pts[j]) for j in xrange(
-            len(pts))] for i in xrange(len(pts))])
+        full = np.matrix([[dist(pts[i], pts[j]) for j in range(
+            len(pts))] for i in range(len(pts))])
 
         kd = pysal.cg.kdtree.KDTree(pts, distance_metric='Arc',
                                     radius=pysal.cg.sphere.RADIUS_EARTH_KM)
@@ -133,8 +136,8 @@ class TestDistanceWeights(unittest.TestCase):
     def test_DistanceBand_arc(self):
         pts = [x.centroid for x in pysal.open(self.arcShp)]
         dist = pysal.cg.sphere.arcdist  # default radius is Earth KM
-        full = np.matrix([[dist(pts[i], pts[j]) for j in xrange(
-            len(pts))] for i in xrange(len(pts))])
+        full = np.matrix([[dist(pts[i], pts[j]) for j in range(
+            len(pts))] for i in range(len(pts))])
 
         kd = pysal.cg.kdtree.KDTree(pts, distance_metric='Arc',
                                     radius=pysal.cg.sphere.RADIUS_EARTH_KM)

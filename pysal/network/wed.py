@@ -9,12 +9,16 @@ TO DO
 
 """
 
+import six
+from six.moves import range
+from six.moves import zip
+
 
 __author__ = "Sergio Rey <sjsrey@gmail.com>, Jay Laura <jlaura@asu.edu>"
 
 import ast
 import json
-import cPickle
+import six.moves.cPickle
 import numpy as np
 import pysal as ps
 from pysal.cg import Point, Polygon, LineSegment, KDTree
@@ -171,13 +175,13 @@ class WED(object):
 
         ps.W(neighbors): PySAL Weights Dict
         """
-        nodes = self.node_edge.keys()
+        nodes = list(self.node_edge.keys())
         neighbors = {}
         for node in nodes:
             lnks = self.enum_links_node(node)
             # put i,j s.t. i < j
             lnks = [tuple(sorted(lnk)) for lnk in lnks]
-            for comb in combinations(range(len(lnks)), 2):
+            for comb in combinations(list(range(len(lnks))), 2):
                 l, r = comb
                 if lnks[l] not in neighbors:
                     neighbors[lnks[l]] = []
@@ -281,7 +285,7 @@ class WED(object):
         coords_org = coords.copy()
 
         # find minimum cycles, filaments and isolated nodes
-        pos = coords.values()
+        pos = list(coords.values())
         mcb = self.regions_from_graph(coords, edges)
 
         regions = mcb['regions']
@@ -340,13 +344,13 @@ class WED(object):
         # Edges belonging to a minimum cycle at this point without a left
         # region have external bounding polygon as implicit left poly. Assign this
         # explicitly
-        rpkeys = right_polygon.keys() # only minimum cycle regions have explicit right polygons
+        rpkeys = list(right_polygon.keys()) # only minimum cycle regions have explicit right polygons
         noleft_poly = [k for k in rpkeys if k not in left_polygon]
 
         for edge in noleft_poly:
             left_polygon[edge] = ri+1
         # Fill out s_c, s_cc, e_c, e_cc pointers for each edge (before filaments are added)
-        regions = region_edge.keys()
+        regions = list(region_edge.keys())
 
         # Find the union of adjacent faces/regions
         unions = []
@@ -783,7 +787,7 @@ class WED(object):
         def find_start_node(nodes, node_coord):
             start_node = []
             minx = float('inf')
-            for key, node in nodes.items():
+            for key, node in list(nodes.items()):
                 if node[0] <= minx:
                     minx = node[0]
                     start_node.append(key)
@@ -1038,8 +1042,8 @@ class WED(object):
 
             return sorted_nodes, edges, nodes, node_coord, primitives, minimal_cycles,cycle_edge, vertices, ext_edges
         #1.
-        sorted_nodes = sorted(nodes.iteritems(), key=operator.itemgetter(1))
-        node_coord = dict (zip(nodes.values(),nodes.keys()))
+        sorted_nodes = sorted(six.iteritems(nodes), key=operator.itemgetter(1))
+        node_coord = dict (list(zip(list(nodes.values()),list(nodes.keys()))))
 
         #2.
         primitives = []
@@ -1110,22 +1114,22 @@ class WED(object):
         wed = WED()
         if binary:
             with open(infile, 'r') as f:
-                data = cPickle.load(f)
+                data = six.moves.cPickle.load(f)
         else:
             with open(infile, 'r') as f:
                 data = json.loads(f)
 
-        wed.start_c = {ast.literal_eval(key):value for key, value in data['start_c'].iteritems()}
-        wed.start_cc = {ast.literal_eval(key):value for key, value in data['start_cc'].iteritems()}
-        wed.end_c = {ast.literal_eval(key):value for key, value in data['end_c'].iteritems()}
-        wed.end_cc = {ast.literal_eval(key):value for key, value in data['end_cc'].iteritems()}
-        wed.region_edge = {ast.literal_eval(key):value for key, value in data['region_edge'].iteritems()}
-        wed.node_edge = {ast.literal_eval(key):value for key, value in data['node_edge'].iteritems()}
-        wed.right_polygon = {ast.literal_eval(key):value for key, value in data['right_polygon'].iteritems()}
-        wed.left_polygon = {ast.literal_eval(key):value for key, value in data['left_polygon'].iteritems()}
-        wed.start_node = {ast.literal_eval(key):value for key, value in data['start_node'].iteritems()}
-        wed.end_node = {ast.literal_eval(key):value for key, value in data['end_node'].iteritems()}
-        wed.node_coords = {ast.literal_eval(key):value for key, value in data['node_coords'].iteritems()}
+        wed.start_c = {ast.literal_eval(key):value for key, value in six.iteritems(data['start_c'])}
+        wed.start_cc = {ast.literal_eval(key):value for key, value in six.iteritems(data['start_cc'])}
+        wed.end_c = {ast.literal_eval(key):value for key, value in six.iteritems(data['end_c'])}
+        wed.end_cc = {ast.literal_eval(key):value for key, value in six.iteritems(data['end_cc'])}
+        wed.region_edge = {ast.literal_eval(key):value for key, value in six.iteritems(data['region_edge'])}
+        wed.node_edge = {ast.literal_eval(key):value for key, value in six.iteritems(data['node_edge'])}
+        wed.right_polygon = {ast.literal_eval(key):value for key, value in six.iteritems(data['right_polygon'])}
+        wed.left_polygon = {ast.literal_eval(key):value for key, value in six.iteritems(data['left_polygon'])}
+        wed.start_node = {ast.literal_eval(key):value for key, value in six.iteritems(data['start_node'])}
+        wed.end_node = {ast.literal_eval(key):value for key, value in six.iteritems(data['end_node'])}
+        wed.node_coords = {ast.literal_eval(key):value for key, value in six.iteritems(data['node_coords'])}
         wed.edge_list = data['edge_list']
 
         return wed
@@ -1133,10 +1137,10 @@ class WED(object):
     def wed_to_json(self, outfile, binary=True):
         #keys need to be strings
         new_wed = {}
-        for key, value in vars(self).iteritems():
+        for key, value in six.iteritems(vars(self)):
             nested_attr = {}
             if isinstance(value, dict):
-                for k2, v2 in value.iteritems():
+                for k2, v2 in six.iteritems(value):
                     nested_attr[str(k2)] = v2
                 new_wed[key] = nested_attr
             else:
@@ -1144,7 +1148,7 @@ class WED(object):
         #print new_wed['edge_list']
         if binary:
             with open(outfile, 'w') as outfile:
-                outfile.write(cPickle.dumps(new_wed, 1))
+                outfile.write(six.moves.cPickle.dumps(new_wed, 1))
         else:
             with open(outfile, 'w') as outfile:
                 json_str = json.dumps(new_wed, sort_keys=True, indent=4)
@@ -1183,11 +1187,11 @@ class WED(object):
     def assign_points_to_nodes(self, pts):
         #Setup a dictionary that stores node_id:[observations values]
         obs_to_node = {}
-        for x in self.node_coords.iterkeys():
+        for x in six.iterkeys(self.node_coords):
             obs_to_node[x] = set()
 
         #Generate a KDTree of all of the nodes in the wed
-        kd_tree = KDTree([node for node in self.node_coords.itervalues()])
+        kd_tree = KDTree([node for node in six.itervalues(self.node_coords)])
 
         #Iterate over each observation and query the KDTree.
         for index, point in enumerate(pts):
@@ -1238,7 +1242,7 @@ class WED(object):
 
         #Brute force check point in polygon
         for pt_index, pt in enumerate(pts):
-            for key, poly in polys.iteritems():
+            for key, poly in six.iteritems(polys):
                 internal = False
                 if ps.cg.standalone.get_polygon_point_intersect(poly, pt):
                     internal = True

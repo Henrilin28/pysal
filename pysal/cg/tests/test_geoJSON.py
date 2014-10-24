@@ -1,3 +1,4 @@
+
 import pysal
 import doctest
 import unittest
@@ -16,9 +17,9 @@ class test_MultiPloygon(unittest.TestCase):
         for poly in multipolygons:
             json = poly.__geo_interface__
             shape = pysal.cg.asShape(json)
-            self.assertEquals(json['type'],'MultiPolygon')
-            self.assertEquals(str(shape.holes), str(poly.holes))
-            self.assertEquals(str(shape.parts), str(poly.parts))
+            self.assertEqual(json['type'],'MultiPolygon')
+            self.assertEqual(str(shape.holes), str(poly.holes))
+            self.assertEqual(str(shape.parts), str(poly.parts))
 
 if __name__ == '__main__':
     unittest.main()

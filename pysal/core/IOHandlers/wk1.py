@@ -1,9 +1,11 @@
+
 import pysal
 import os.path
 import struct
 import pysal.core.FileIO as FileIO
 from pysal.weights import W
 from warnings import warn
+import six
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["Wk1IO"]
@@ -147,7 +149,7 @@ class Wk1IO(FileIO.FileIO):
         self.file = open(self.dataPath, self.mode + 'b')
 
     def _set_varName(self, val):
-        if issubclass(type(val), basestring):
+        if issubclass(type(val), six.string_types):
             self._varName = val
 
     def _get_varName(self):

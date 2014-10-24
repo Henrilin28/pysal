@@ -1,4 +1,5 @@
 """Unit test for Contiguity.py"""
+
 import unittest
 import pysal
 import numpy as np

@@ -1,8 +1,10 @@
+
 import unittest
 import pysal
 from pysal.esda import smoothing as sm
 from pysal import knnW
 import numpy as np
+from six.moves import range
 
 
 class TestFlatten(unittest.TestCase):
@@ -12,8 +14,8 @@ class TestFlatten(unittest.TestCase):
     def test_flatten(self):
         out1 = sm.flatten(self.input)
         out2 = sm.flatten(self.input, unique=False)
-        self.assertEquals(out1, [1, 2, 3, 4, 5, 6])
-        self.assertEquals(out2, [1, 2, 3, 3, 4, 5, 6])
+        self.assertEqual(out1, [1, 2, 3, 4, 5, 6])
+        self.assertEqual(out2, [1, 2, 3, 3, 4, 5, 6])
 
 
 class TestWMean(unittest.TestCase):
@@ -25,8 +27,8 @@ class TestWMean(unittest.TestCase):
     def test_weighted_median(self):
         out1 = sm.weighted_median(self.d, self.w1)
         out2 = sm.weighted_median(self.d, self.w2)
-        self.assertEquals(out1, 4)
-        self.assertEquals(out2, 3.5)
+        self.assertEqual(out1, 4)
+        self.assertEqual(out2, 3.5)
 
 
 class TestAgeStd(unittest.TestCase):
@@ -40,21 +42,21 @@ class TestAgeStd(unittest.TestCase):
     def test_crude_age_standardization(self):
         crude = sm.crude_age_standardization(self.e, self.b, self.n).round(8)
         crude_exp = np.array([0.02375000, 0.02666667])
-        self.assertEquals(list(crude), list(crude_exp))
+        self.assertEqual(list(crude), list(crude_exp))
 
     def test_direct_age_standardization(self):
         direct = np.array(sm.direct_age_standardization(
             self.e, self.b, self.s_b, self.n)).round(8)
         direct_exp = np.array([[0.02374402, 0.01920491,
                                 0.02904848], [0.02665072, 0.02177143, 0.03230508]])
-        self.assertEquals(list(direct.flatten()), list(direct_exp.flatten()))
+        self.assertEqual(list(direct.flatten()), list(direct_exp.flatten()))
 
     def test_indirect_age_standardization(self):
         indirect = np.array(sm.indirect_age_standardization(
             self.e, self.b, self.s_e, self.s_b, self.n)).round(8)
         indirect_exp = np.array([[0.02372382, 0.01940230,
                                   0.02900789], [0.02610803, .02154304, 0.03164035]])
-        self.assertEquals(
+        self.assertEqual(
             list(indirect.flatten()), list(indirect_exp.flatten()))
 
 
@@ -79,19 +81,19 @@ class TestSRate(unittest.TestCase):
     def test_Excess_Risk(self):
         out_er = sm.Excess_Risk(self.e, self.b).r
         out_er = [round(i, 5) for i in out_er[:5]]
-        self.assertEquals(out_er, self.er)
+        self.assertEqual(out_er, self.er)
 
     def test_Empirical_Bayes(self):
         out_eb = sm.Empirical_Bayes(self.e, self.b).r
         out_eb = [round(i, 7) for i in out_eb[:5]]
-        self.assertEquals(out_eb, self.eb)
+        self.assertEqual(out_eb, self.eb)
 
     def test_Spatial_Empirical_Bayes(self):
         stl = pysal.open(pysal.examples.get_path('stl_hom.csv'), 'r')
         stl_e, stl_b = np.array(stl[:, 10]), np.array(stl[:, 13])
         stl_w = pysal.open(pysal.examples.get_path('stl.gal'), 'r').read()
         if not stl_w.id_order_set:
-            stl_w.id_order = range(1, len(stl) + 1)
+            stl_w.id_order = list(range(1, len(stl) + 1))
         s_eb = sm.Spatial_Empirical_Bayes(stl_e, stl_b, stl_w)
         s_ebr10 = np.array([4.01485749e-05, 3.62437513e-05,
                             4.93034844e-05, 5.09387329e-05, 3.72735210e-05,
@@ -102,7 +104,7 @@ class TestSRate(unittest.TestCase):
     def test_Spatial_Rate(self):
         out_sr = sm.Spatial_Rate(self.e, self.b, self.w).r
         out_sr = [round(i, 7) for i in out_sr[:5]]
-        self.assertEquals(out_sr, self.sr)
+        self.assertEqual(out_sr, self.sr)
 
     def test_Spatial_Median_Rate(self):
         out_smr = sm.Spatial_Median_Rate(self.e, self.b, self.w).r
@@ -112,9 +114,9 @@ class TestSRate(unittest.TestCase):
         out_smr = [round(i, 7) for i in out_smr[:5]]
         out_smr_w = [round(i, 7) for i in out_smr_w[:5]]
         out_smr2 = [round(i, 7) for i in out_smr2[:5]]
-        self.assertEquals(out_smr, self.smr)
-        self.assertEquals(out_smr_w, self.smr_w)
-        self.assertEquals(out_smr2, self.smr2)
+        self.assertEqual(out_smr, self.smr)
+        self.assertEqual(out_smr_w, self.smr_w)
+        self.assertEqual(out_smr2, self.smr2)
 
 
 class TestHB(unittest.TestCase):
@@ -130,12 +132,12 @@ class TestHB(unittest.TestCase):
 
     def test_Headbanging_Triples(self):
         ht = sm.Headbanging_Triples(self.d, self.w)
-        self.assertEquals(len(ht.triples), len(self.d))
+        self.assertEqual(len(ht.triples), len(self.d))
         ht2 = sm.Headbanging_Triples(self.d, self.w, edgecor=True)
         self.assertTrue(hasattr(ht2, 'extra'))
-        self.assertEquals(len(ht2.triples), len(self.d))
+        self.assertEqual(len(ht2.triples), len(self.d))
         htr = sm.Headbanging_Median_Rate(self.e, self.b, ht2, iteration=5)
-        self.assertEquals(len(htr.r), len(self.e))
+        self.assertEqual(len(htr.r), len(self.e))
         for i in htr.r:
             self.assertTrue(i is not None)
 
@@ -172,19 +174,19 @@ class TestKernel_AgeAdj_SM(unittest.TestCase):
             10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
         self.kw = pysal.weights.Kernel(self.points)
         if not self.kw.id_order_set:
-            self.kw.id_order = range(0, len(self.points))
+            self.kw.id_order = list(range(0, len(self.points)))
 
     def test_Kernel_Smoother(self):
         kr = sm.Kernel_Smoother(self.e, self.b, self.kw)
         exp = [0.10543301, 0.0858573, 0.08256196, 0.09884584,
                0.04756872, 0.04845298]
-        self.assertEquals(list(kr.r.round(8)), exp)
+        self.assertEqual(list(kr.r.round(8)), exp)
 
     def test_Age_Adjusted_Smoother(self):
         ar = sm.Age_Adjusted_Smoother(self.e1, self.b1, self.kw, self.s)
         exp = [0.10519625, 0.08494318, 0.06440072, 0.06898604,
                0.06952076, 0.05020968]
-        self.assertEquals(list(ar.r.round(8)), exp)
+        self.assertEqual(list(ar.r.round(8)), exp)
 
     def test_Disk_Smoother(self):
         self.kw.transform = 'b'

@@ -1,3 +1,4 @@
+
 import unittest
 import pysal
 from pysal.core.util.weight_converter import WeightConverter
@@ -5,6 +6,7 @@ from pysal.core.util.weight_converter import weight_convert
 import tempfile
 import os
 import warnings
+from six.moves import zip
 
 
 class test_WeightConverter(unittest.TestCase):
@@ -17,8 +19,8 @@ class test_WeightConverter(unittest.TestCase):
         dataformats = ['arcgis_dbf', 'arcgis_text', None, None, None, None, None,
                        'geobugs_text', 'stata_text', 'stata_text', None, None]
         ns = [88, 3, 88, 49, 49, 100, 168, 56, 56, 56, 46, 46]
-        self.dataformats = dict(zip(self.test_files, dataformats))
-        self.ns = dict(zip(self.test_files, ns))
+        self.dataformats = dict(list(zip(self.test_files, dataformats)))
+        self.ns = dict(list(zip(self.test_files, ns)))
         self.fileformats = [('dbf', 'arcgis_dbf'), ('txt', 'arcgis_text'), ('swm', None),
                             ('dat', None), ('mtx', None), ('gal', None), ('',
                                                                           'geobugs_text'),

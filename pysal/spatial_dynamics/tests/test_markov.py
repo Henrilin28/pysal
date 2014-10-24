@@ -1,7 +1,9 @@
+
 import unittest
 import pysal
 from pysal.spatial_dynamics import markov
 import numpy as np
+from six.moves import range
 
 
 class test_Markov(unittest.TestCase):

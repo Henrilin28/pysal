@@ -1,7 +1,9 @@
 
 """locators Unittest."""
+
 from pysal.cg import *
 import unittest
+from six.moves import range
 
 
 class PolygonLocator_Tester(unittest.TestCase):

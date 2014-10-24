@@ -5,6 +5,8 @@ Randomly form regions given various types of constraints on cardinality and
 composition.
 """
 
+from six.moves import range
+
 __author__ = "David Folch dfolch@asu.edu, Serge Rey srey@asu.edu"
 
 import numpy as np

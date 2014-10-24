@@ -8,6 +8,8 @@ l_ij = length of shared border i and j
 P_j = perimeter of j
 
 """
+
+from six.moves import map
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ["spw_from_shapefile"]
 
@@ -17,7 +19,7 @@ import shapely.geometry
 
 def spw_from_shapefile(shapefile, idVariable=None):
     polygons = pysal.open(shapefile,'r').read()
-    polygons = map(shapely.geometry.asShape,polygons)
+    polygons = list(map(shapely.geometry.asShape,polygons))
     perimeters = [p.length for p in polygons]
     Wsrc = pysal.rook_from_shapefile(shapefile)
     new_weights = {}

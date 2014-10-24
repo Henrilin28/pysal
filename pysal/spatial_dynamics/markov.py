@@ -1,6 +1,9 @@
 """
 Markov based methods for spatial dynamics
 """
+
+
+from six.moves import range
 __author__ = "Sergio J. Rey <srey@asu.edu"
 
 import numpy as np
@@ -144,7 +147,7 @@ class Markov:
 
         n, t = class_ids.shape
         k = len(self.classes)
-        js = range(t - 1)
+        js = list(range(t - 1))
 
         classIds = self.classes.tolist()
         transitions = np.zeros((k, k))
@@ -421,7 +424,7 @@ class Spatial_Markov:
 
         if permutations:
             nrp = np.random.permutation
-            rp = range(permutations)
+            rp = list(range(permutations))
             counter = 0
             x2_realizations = np.zeros((permutations, 1))
             x2ss = []
@@ -470,7 +473,7 @@ class Spatial_Markov:
                 F[i] = fmpt(p_i)
             except:
                 #pylint; "No exception type(s) specified"
-                print "Singlular fmpt matrix for class ", i
+                print("Singlular fmpt matrix for class ", i)
             P[i] = p_i
         return T, P, ss, F
 
@@ -482,7 +485,7 @@ class Spatial_Markov:
         n, t = self.y.shape
         nt = n * (t - 1)
         n0, n1, n2 = self.T.shape
-        rn = range(n0)
+        rn = list(range(n0))
         mat = [self._ssmnp_test(
             self.s, self.S[i], self.T[i].sum()) for i in rn]
         return mat
@@ -529,7 +532,7 @@ class Spatial_Markov:
         """
         n, t = self.y.shape
         n0, n1, n2 = self.T.shape
-        rn = range(n0)
+        rn = list(range(n0))
         mat = [chi2(self.T[i], self.transitions) for i in rn]
         return mat
 
@@ -974,7 +977,7 @@ class LISA_Markov(Markov):
             spill_over = np.zeros((n, k - 1))
             components = np.zeros((n, k))
             i2id = {}  # handle string keys
-            for key in self.w.neighbors.keys():
+            for key in list(self.w.neighbors.keys()):
                 id = self.w.id2i[key]  # pylint "redefining built-in 'id'
                 i2id[id] = key
             sig_lisas = (self.q == quadrant) \

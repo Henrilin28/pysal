@@ -1,3 +1,4 @@
+
 import pysal
 import os.path
 import scipy.io as sio
@@ -5,6 +6,7 @@ import pysal.core.FileIO as FileIO
 from pysal.weights import W
 from pysal.weights.util import full, full2W
 from warnings import warn
+import six
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["MatIO"]
@@ -47,7 +49,7 @@ class MatIO(FileIO.FileIO):
         self.file = open(self.dataPath, self.mode + 'b')
 
     def _set_varName(self, val):
-        if issubclass(type(val), basestring):
+        if issubclass(type(val), six.string_types):
             self._varName = val
 
     def _get_varName(self):

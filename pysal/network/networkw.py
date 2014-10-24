@@ -2,12 +2,14 @@
 Weights for PySAL Network Module
 """
 
+from six.moves import range
+
 __author__ = "Sergio Rey <sjsrey@gmail.com>, Jay Laura <jlaura@asu.edu>"
 
 from itertools import combinations
 import numpy as np
 import pysal as ps
-from util import threshold_distance, edge_length, knn_distance
+from .util import threshold_distance, edge_length, knn_distance
 
 
 def w_links(wed):
@@ -22,13 +24,13 @@ def w_links(wed):
 
     ps.W(neighbors): PySAL Weights Dict
     """
-    nodes = wed.node_edge.keys()
+    nodes = list(wed.node_edge.keys())
     neighbors = {}
     for node in nodes:
         lnks = wed.enum_links_node(node)
         # put i,j s.t. i < j
         lnks = [tuple(sorted(lnk)) for lnk in lnks]
-        for comb in combinations(range(len(lnks)), 2):
+        for comb in combinations(list(range(len(lnks))), 2):
             l, r = comb
             if lnks[l] not in neighbors:
                 neighbors[lnks[l]] = []

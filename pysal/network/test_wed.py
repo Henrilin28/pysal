@@ -12,10 +12,13 @@ to do
  cases
 """
 
+
+
 import pysal as ps
 import numpy as np
+from six.moves import range
 
-nodes = range(27)
+nodes = list(range(27))
 
 # put polygons in cw order
 # region will be to the right of these edges
@@ -110,13 +113,13 @@ def enum_links_region(wed,region):
             links.append(l)
     return links
 
-print enum_links_node(wed,4)
+print(enum_links_node(wed,4))
 
 
 # handle internal filament with end node
-print 'before'
-print 'enum around node 4', enum_links_node(wed,4)
-print 'enum around region 0', enum_links_region(wed,r0)
+print('before')
+print('enum around node 4', enum_links_node(wed,4))
+print('enum around region 0', enum_links_region(wed,r0))
 
 # make local adjustments
 # new edges first
@@ -147,17 +150,17 @@ wed['end_c'][3,4] = 4,5
 # not modified due to insertion of an end-node-filament, traversing around the
 # edges of a region works
 
-print 'after internal end-node filament'
-print 'enum around node 4', enum_links_node(wed,4)
-print 'enum around region 0', enum_links_region(wed,r0)
+print('after internal end-node filament')
+print('enum around node 4', enum_links_node(wed,4))
+print('enum around region 0', enum_links_region(wed,r0))
 
 
 # now try an end-point filament that is external, but linked to a region
 
 
-print 'before external end-node-filament'
-print 'enum around node 3', enum_links_node(wed,3)
-print 'enum around region 0', enum_links_region(wed,r0)
+print('before external end-node-filament')
+print('enum around node 3', enum_links_node(wed,3))
+print('enum around region 0', enum_links_region(wed,r0))
 
 wed['edges'][3,28] = 3,28
 wed['edges'][28,29] = 28,29
@@ -184,13 +187,13 @@ wed['end_c'][4,3] = 3,28
 
 
 
-print 'after external end-node filament'
-print 'enum around node 3', enum_links_node(wed,3)
-print 'enum around region 0', enum_links_region(wed,r0)
+print('after external end-node filament')
+print('enum around node 3', enum_links_node(wed,3))
+print('enum around region 0', enum_links_region(wed,r0))
 
 
-print 'enum links around 28: ', enum_links_node(wed,28)
-print 'enum links around 29: ', enum_links_node(wed,29)
+print('enum links around 28: ', enum_links_node(wed,28))
+print('enum links around 29: ', enum_links_node(wed,29))
 
 
 # adding isolated cases and holes for connected component checks
@@ -281,7 +284,7 @@ def connected_components(wed):
 
     """
 
-    nodes = wed['node_edge'].keys()
+    nodes = list(wed['node_edge'].keys())
     components = []
     while nodes:
         start = nodes.pop()

@@ -1,8 +1,10 @@
+
 import unittest
 from pysal.network.data import WED
 import pysal.network.net_shp_io as net_shp_io
 
 import pysal as ps
+from six.moves import range
 
 
 class TestWedOrdered(unittest.TestCase):

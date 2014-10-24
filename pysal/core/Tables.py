@@ -1,5 +1,8 @@
+
+import six
+from six.moves import range
 __all__ = ['DataTable']
-import FileIO
+from . import FileIO
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
@@ -65,7 +68,7 @@ class DataTable(FileIO.FileIO):
             #>>> assert index in range(0, len(table))
         """
         prevPos = self.tell()
-        if issubclass(type(key), basestring):
+        if issubclass(type(key), six.string_types):
             raise TypeError("index should be int or slice")
         if issubclass(type(key), int) or isinstance(key, slice):
             rows = key
@@ -79,10 +82,10 @@ class DataTable(FileIO.FileIO):
         if isinstance(rows, slice):
             row_start, row_stop, row_step = rows.indices(len(self))
             self.seek(row_start)
-            data = [self.next() for i in range(row_start, row_stop, row_step)]
+            data = [next(self) for i in range(row_start, row_stop, row_step)]
         else:
             self.seek(slice(rows).indices(len(self))[1])
-            data = [self.next()]
+            data = [next(self)]
         if cols is not None:
             if isinstance(cols, slice):
                 col_start, col_stop, col_step = cols.indices(len(data[0]))

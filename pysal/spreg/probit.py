@@ -1,5 +1,7 @@
 """Probit regression class and diagnostics."""
 
+from six.moves import range
+
 __author__ = "Luc Anselin luc.anselin@asu.edu, Pedro V. Amaral pedro.amaral@asu.edu"
 
 import numpy as np
@@ -7,8 +9,8 @@ import numpy.linalg as la
 import scipy.optimize as op
 from scipy.stats import norm, chisqprob
 import scipy.sparse as SP
-import user_output as USER
-import summary_output as SUMMARY
+from . import user_output as USER
+from . import summary_output as SUMMARY
 
 __all__ = ["Probit"]
 
@@ -158,7 +160,7 @@ class BaseProbit:
             rs = {}
             for i in range(len(self.betas)):
                 rs[i] = (zStat[i], norm.sf(abs(zStat[i])) * 2)
-            self._cache['z_stat'] = rs.values()
+            self._cache['z_stat'] = list(rs.values())
         return self._cache['z_stat']
 
     @property
@@ -176,7 +178,7 @@ class BaseProbit:
             rs = {}
             for i in range(len(self.slopes)):
                 rs[i] = (zStat[i], norm.sf(abs(zStat[i])) * 2)
-            self._cache['slopes_z_stat'] = rs.values()
+            self._cache['slopes_z_stat'] = list(rs.values())
         return self._cache['slopes_z_stat']
 
     @property
@@ -631,7 +633,7 @@ def sp_tests(reg):
         # chi-square instead of bootstrap.
         ps = np.array([ps, chisqprob(ps, 1)])
     else:
-        raise Exception, "W matrix not provided to calculate spatial test."
+        raise Exception("W matrix not provided to calculate spatial test.")
     return LM_err, moran, ps
 
 

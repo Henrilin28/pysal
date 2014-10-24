@@ -3,6 +3,7 @@ Reader and writer for PySAL network shapefiles
 """
 
 
+
 import pysal as ps
 import os
 

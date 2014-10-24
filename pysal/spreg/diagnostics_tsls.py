@@ -3,6 +3,7 @@ Diagnostics for two stage least squares regression estimations.
         
 """
 
+
 __author__ = "Luc Anselin luc.anselin@asu.edu, Nicholas Malizia nicholas.malizia@asu.edu "
 
 from pysal.common import *

@@ -1,9 +1,12 @@
 
+
+
 # each polygon chain is converted to a series of connected edges
 
 import pysal as ps
 import numpy as np
 import os
+from six.moves import range
 shpf = ps.open(ps.examples.get_path("geodanet/streets.shp"))
 shps = []
 for shp in shpf:
@@ -17,12 +20,12 @@ id2coord = {}
 coord2id = {}
 n_edges = n_nodes = 0
 for i,shp in enumerate(shps):
-    print i, len(shp.vertices)
-    print shp.vertices
+    print(i, len(shp.vertices))
+    print(shp.vertices)
     for j in range(1, len(shp.vertices)):
         o = shp.vertices[j-1]
         d = shp.vertices[j]
-        print o,d
+        print(o,d)
         #raw_input('here')
         if o not in coord2id:
             id2coord[n_nodes] = o
@@ -41,10 +44,10 @@ for i,shp in enumerate(shps):
             edge2id[edge] = n_edges
             n_edges+=1
         id2edge[edge2id[edge]] = edge
-    print o,d
+    print(o,d)
 
 coords = id2coord
-edges = id2edge.values()
+edges = list(id2edge.values())
 
 
 # this will replace createSpatialNetworkShapefile in contrib/spatialnet
@@ -53,7 +56,7 @@ shp_out = ps.open("streets_net.shp", 'w')
 dbf_out = ps.open("streets_net.dbf", 'w')
 dbf_out.header = ["FNODE","TNODE","ONEWAY"]
 dbf_out.field_spec = [('N',20,0),('N',20,0),('L',1,0)]
-ids = id2coord.keys()
+ids = list(id2coord.keys())
 ids.sort()
 for edge in edges:
     o = coords[edge[0]]
@@ -65,22 +68,22 @@ for edge in edges:
 dbf_out.close()
 shp_out.close()
 
-import net_shp_io
+from . import net_shp_io
 file_name = "streets_net.shp"
 coords, edges = net_shp_io.reader(file_name)
 coords1, edges1 = net_shp_io.reader(file_name, doubleEdges=False)
 
 
-import wed
+from . import wed
 
 wed_streets = wed.WED(edges, coords)
 #wed1_streets = wed.extract_wed(edges1, coords1)
 
-regions = wed_streets.region_edge.keys()
+regions = list(wed_streets.region_edge.keys())
 
 
 
 # cleanup
-files = [ "streets_net."+suffix for suffix in "shp","dbf","shx"]
+files = [ "streets_net."+suffix for suffix in ("shp","dbf","shx")]
 for f in files:
     os.remove(f)

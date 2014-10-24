@@ -2,6 +2,9 @@
 Distance based spatial weights
 """
 
+
+from six.moves import zip
+
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
 import pysal
@@ -130,7 +133,7 @@ def knnW(data, k=2, p=2, ids=None, pct_unique=0.25):
             nnq = kd.query(data, k=k + 1, p=p)
             info = nnq[1]
     else:
-        print 'Unsupported type'
+        print('Unsupported type')
         return None
 
     neighbors = {}
@@ -369,7 +372,7 @@ class Kernel(W):
         z = []
         for i, nids in enumerate(self.neigh):
             di, ni = kdtq(self.data[i], k=len(nids))
-            zi = np.array([dict(zip(ni, di))[nid] for nid in nids]) / bw[i]
+            zi = np.array([dict(list(zip(ni, di)))[nid] for nid in nids]) / bw[i]
             z.append(zi)
         zs = z
         # functions follow Anselin and Rey (2010) table 5.4
@@ -386,7 +389,7 @@ class Kernel(W):
             c = c ** (-0.5)
             self.kernel = [c * np.exp(-(zi ** 2) / 2.) for zi in zs]
         else:
-            print 'Unsupported kernel function', self.function
+            print('Unsupported kernel function', self.function)
 
 
 class DistanceBand(W):
@@ -497,7 +500,7 @@ class DistanceBand(W):
         neighbors = dict([(i,[]) for i in ids])
         weights = dict([(i,[]) for i in ids])
         if self.binary:
-            for key,weight in self.dmat.items():
+            for key,weight in list(self.dmat.items()):
                 i,j = key
                 if j not in neighbors[i]:
                     weights[i].append(1)
@@ -507,7 +510,7 @@ class DistanceBand(W):
                     neighbors[j].append(i)
 
         else:
-            for key,weight in self.dmat.items():
+            for key,weight in list(self.dmat.items()):
                 i,j = key
                 if j not in neighbors[i]:
                     weights[i].append(weight**self.alpha)

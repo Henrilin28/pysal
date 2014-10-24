@@ -40,6 +40,7 @@ Function comment format:
     Extras (notes, references, examples, doctest, etc.)
 """
 
+
 __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow"
 __credits__ = "Copyright (c) 2005-2009 Sergio J. Rey"
 

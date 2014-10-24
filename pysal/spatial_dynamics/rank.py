@@ -1,6 +1,8 @@
 """
 Rank and spatial rank mobility measures
 """
+
+from six.moves import range
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
 #from pysal.common import *
@@ -91,7 +93,7 @@ class Theta:
         ranks = rankdata(y, axis=0)
         self.ranks = ranks
         n, k = y.shape
-        ranks_d = ranks[:, range(1, k)] - ranks[:, range(k - 1)]
+        ranks_d = ranks[:, list(range(1, k))] - ranks[:, list(range(k - 1))]
         self.ranks_d = ranks_d
         regimes = sp.unique(regime)
         self.regimes = regimes
@@ -103,7 +105,7 @@ class Theta:
         if permutations:
             np.perm = np.random.permutation
             sim = np.array([self._calc(
-                np.perm(regime)) for i in xrange(permutations)])
+                np.perm(regime)) for i in range(permutations)])
             self.theta.shape = (1, len(self.theta))
             sim = np.concatenate((self.theta, sim))
             self.sim = sim
@@ -191,7 +193,7 @@ class Tau:
         x = np.array(x)
         y = np.array(y)
         n = len(y)
-        perm = range(n)
+        perm = list(range(n))
         perm.sort(key=lambda a: (x[a], y[a]))
         vals = y[perm]
         ExtraY = 0
@@ -393,7 +395,7 @@ class SpatialTau:
         if permutations > 0:
             taus = np.zeros(permutations)
             ids = np.arange(self.n)
-            for r in xrange(permutations):
+            for r in range(permutations):
                 rids = np.random.permutation(ids)
                 taus[r] = self._calc(x[rids], y[rids], w)[0]
             self.taus = taus

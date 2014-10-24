@@ -1,7 +1,9 @@
 
 """pyrtree Unittest."""
+
 from pysal.cg import RTree, Rect
 import unittest
+from six.moves import range
 
 
 class Pyrtree_Tester(unittest.TestCase):

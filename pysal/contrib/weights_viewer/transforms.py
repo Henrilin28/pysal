@@ -1,3 +1,4 @@
+
 import pysal
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"

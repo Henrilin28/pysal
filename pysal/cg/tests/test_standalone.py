@@ -1,9 +1,11 @@
+
 import unittest
 import numpy as np
 import math
 
 from pysal.cg.shapes import *
 from pysal.cg.standalone import *
+from six.moves import range
 
 
 class TestBbcommon(unittest.TestCase):

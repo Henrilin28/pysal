@@ -2,6 +2,8 @@
 Tools for different procedure estimations
 """
 
+from six.moves import range
+
 __author__ = "Luc Anselin luc.anselin@asu.edu, \
         Pedro V. Amaral pedro.amaral@asu.edu, \
         David C. Folch david.folch@asu.edu, \
@@ -466,7 +468,7 @@ def inverse_prod(w, data, scalar, post_multiply=False, inv_method="power_exp", t
         else:
             inv_prod = spdot(matrix, data)
     else:
-        raise Exception, "Invalid method selected for inversion."
+        raise Exception("Invalid method selected for inversion.")
     return inv_prod
 
 
@@ -505,7 +507,7 @@ def power_expansion(w, data, scalar, post_multiply=False, threshold=0.0000000001
         test_old = test
         test = la.norm(increment)
         if test > test_old:
-            raise Exception, "power expansion will not converge, check model specification and that weight are less than 1"
+            raise Exception("power expansion will not converge, check model specification and that weight are less than 1")
         count += 1
     return running_total
 
@@ -526,7 +528,7 @@ def set_endog(y, x, w, yend, q, w_lags, lag_q):
         q = get_lags(w, x, w_lags)
         yend = yl
     else:
-        raise Exception, "invalid value passed to yend"
+        raise Exception("invalid value passed to yend")
     return yend, q
 
     lag = lag_spatial(w, x)
@@ -559,7 +561,7 @@ def set_endog_sparse(y, x, w, yend, q, w_lags, lag_q):
             q = sphstack(q, w * q)
         yend = yl
     else:
-        raise Exception, "invalid value passed to yend"
+        raise Exception("invalid value passed to yend")
     return yend, q
 
 
@@ -618,8 +620,8 @@ def spdot(a, b, array_out=True):
             if type(ab).__name__ == 'csc_matrix' or type(ab).__name__ == 'csr_matrix':
                 ab = ab.toarray()
     else:
-        raise Exception, "Invalid format for 'spdot' argument: %s and %s" % (
-            type(a).__name__, type(b).__name__)
+        raise Exception("Invalid format for 'spdot' argument: %s and %s" % (
+            type(a).__name__, type(b).__name__))
     return ab
 
 
@@ -654,8 +656,8 @@ def spmultiply(a, b, array_out=True):
             if type(ab).__name__ == 'csc_matrix' or type(ab).__name__ == 'csr_matrix':
                 ab = ab.toarray()
     else:
-        raise Exception, "Invalid format for 'spmultiply' argument: %s and %s" % (
-            type(a).__name__, type(b).__name__)
+        raise Exception("Invalid format for 'spmultiply' argument: %s and %s" % (
+            type(a).__name__, type(b).__name__))
     return ab
 
 
@@ -689,8 +691,8 @@ def sphstack(a, b, array_out=False):
             if type(ab).__name__ == 'csr_matrix':
                 ab = ab.toarray()
     else:
-        raise Exception, "Invalid format for 'sphstack' argument: %s and %s" % (
-            type(a).__name__, type(b).__name__)
+        raise Exception("Invalid format for 'sphstack' argument: %s and %s" % (
+            type(a).__name__, type(b).__name__))
     return ab
 
 
@@ -727,8 +729,8 @@ def spbroadcast(a, b, array_out=False):
             if type(ab).__name__ == 'csr_matrix':
                 ab = ab.toarray()
     else:
-        raise Exception, "Invalid format for 'spbroadcast' argument: %s and %s" % (
-            type(a).__name__, type(b).__name__)
+        raise Exception("Invalid format for 'spbroadcast' argument: %s and %s" % (
+            type(a).__name__, type(b).__name__))
     return ab
 
 
@@ -758,10 +760,10 @@ def spmin(a):
             if np.sum(a.data) == 0:
                 return 0
             else:
-                raise Exception, "Error: could not evaluate the minimum value."
+                raise Exception("Error: could not evaluate the minimum value.")
     else:
-        raise Exception, "Invalid format for 'spmultiply' argument: %s and %s" % (
-            type(a).__name__, type(b).__name__)
+        raise Exception("Invalid format for 'spmultiply' argument: %s and %s" % (
+            type(a).__name__, type(b).__name__))
 
 
 def spmax(a):
@@ -789,10 +791,10 @@ def spmax(a):
             if np.sum(a.data) == 0:
                 return 0
             else:
-                raise Exception, "Error: could not evaluate the maximum value."
+                raise Exception("Error: could not evaluate the maximum value.")
     else:
-        raise Exception, "Invalid format for 'spmultiply' argument: %s and %s" % (
-            type(a).__name__, type(b).__name__)
+        raise Exception("Invalid format for 'spmultiply' argument: %s and %s" % (
+            type(a).__name__, type(b).__name__))
 
 
 def set_warn(reg, warn):

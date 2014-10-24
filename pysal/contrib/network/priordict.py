@@ -3,7 +3,9 @@ Code adapted from source from:
 David Eppstein, UC Irvine, 8 Mar 2002
 """
 
-from __future__ import generators
+
+
+import six
 
 class PriorityDictionary(dict):
 
@@ -22,7 +24,7 @@ class PriorityDictionary(dict):
         Find smallest item after removing deleted items from heap.
         """
         if len(self) == 0:
-            raise IndexError, "smallest of empty PriorityDictionary"
+            raise IndexError("smallest of empty PriorityDictionary")
         heap = self.__heap
         while heap[0][1] not in self or self[heap[0][1]] != heap[0][0]:
             lastItem = heap.pop()
@@ -59,7 +61,7 @@ class PriorityDictionary(dict):
         dict.__setitem__(self,key,val)
         heap = self.__heap
         if len(heap) > 2 * len(self):
-            self.__heap = [(v,k) for k,v in self.iteritems()]
+            self.__heap = [(v,k) for k,v in six.iteritems(self)]
             self.__heap.sort()  # builtin sort likely faster than O(n) heapify
         else:
             newPair = (val,key)

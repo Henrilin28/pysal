@@ -1,3 +1,4 @@
+
 import pysal
 import os.path
 import numpy as np
@@ -6,6 +7,8 @@ import pysal.core.FileIO as FileIO
 from pysal.weights import W
 from pysal.weights.util import remap_ids
 from warnings import warn
+import six
+from six.moves import range
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISSwmIO"]
@@ -57,7 +60,7 @@ class ArcGISSwmIO(FileIO.FileIO):
         self.file = open(self.dataPath, self.mode + 'b')
 
     def _set_varName(self, val):
-        if issubclass(type(val), basestring):
+        if issubclass(type(val), six.string_types):
             self._varName = val
 
     def _get_varName(self):
@@ -114,7 +117,7 @@ class ArcGISSwmIO(FileIO.FileIO):
 
         neighbors = {}
         weights = {}
-        for i in xrange(no_obs):
+        for i in range(no_obs):
             origin, no_nghs = tuple(unpack('<2l', self.file.read(8)))
             neighbors[origin] = []
             weights[origin] = []

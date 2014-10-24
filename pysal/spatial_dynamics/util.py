@@ -1,7 +1,9 @@
 """
 Utilities for the spatial dynamics module.
 """
+
 import numpy as np
+from six.moves import range
 
 __all__ = ['shuffle_matrix', 'get_lower']
 

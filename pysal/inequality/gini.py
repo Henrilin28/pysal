@@ -2,6 +2,8 @@
 Gini based Inequality Metrics
 """
 
+from six.moves import range
+
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
 #from pysal.common import *
@@ -152,7 +154,7 @@ class Gini_Spatial:
         if permutations:
             ids = np.arange(n)
             wcgp = np.zeros((permutations, 1))
-            for perm in xrange(permutations):
+            for perm in range(permutations):
                 # permute rows/cols of d
                 np.random.shuffle(ids)
                 wcgp[perm] = w.sparse.multiply(d[ids, :][:, ids]).sum()

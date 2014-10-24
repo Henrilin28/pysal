@@ -1,6 +1,8 @@
 """Unit test for Wsets module."""
+
 import unittest
 import pysal
+from six.moves import range
 
 
 class TestWsets(unittest.TestCase):
@@ -50,7 +52,7 @@ class TestWsets(unittest.TestCase):
     def test_w_subset(self):
         """Unit test"""
         w1 = pysal.lat2W(6, 4)
-        ids = range(16)
+        ids = list(range(16))
         w2 = pysal.weights.Wsets.w_subset(w1, ids)
         self.assertEqual(w1[0], w2[0])
         self.assertEqual(w1.neighbors[15], [11, 14, 19])

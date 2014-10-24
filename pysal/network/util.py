@@ -2,6 +2,11 @@
 Utilities for PySAL Network Module
 """
 
+
+import six
+from six.moves import range
+from six.moves import zip
+
 __author__ = "Sergio Rey <sjsrey@gmail.com>, Jay Laura <jlaura@asu.edu>"
 import copy
 import math
@@ -119,7 +124,7 @@ def edge_length(wed, half=False):
     lengths = {}
     for edge in wed.edge_list:
         if half:
-            if (edge[1], edge[0]) not in lengths.keys():
+            if (edge[1], edge[0]) not in list(lengths.keys()):
                 lengths[edge] = get_points_dist(wed.node_coords[edge[0]],
                                                 wed.node_coords[edge[1]])
         else:
@@ -141,7 +146,7 @@ def snap_to_edges(wed, points):
     """
 
     obs_to_edge = {}
-    for region in wed.region_edge.keys():
+    for region in list(wed.region_edge.keys()):
         verts = []
         region_edges = enum_edges_region(wed, region)
         for edge in region_edges:
@@ -176,7 +181,7 @@ def snap_to_edges(wed, points):
                     d[distance] = c
                     c += 1
                 min_dist = SortedEdges(sorted(d.items()))
-                for dist, vector_id in min_dist.iteritems():
+                for dist, vector_id in six.iteritems(min_dist):
                     value = vectors[vector_id]
                     xi = value[0]
                     xi1 = value[1]
@@ -189,7 +194,7 @@ def snap_to_edges(wed, points):
                     y = y0 + k * (xi1 - xi)
                     if xi <= x <= xi1 or xi1 <= x <= xi and yi <= y <= yi1 or yi1 <=y <= yi:
                         #print "{} intersections edge {} at {}".format(pt_index, edge, (x,y))
-                        if edge not in obs_to_edge.keys():
+                        if edge not in list(obs_to_edge.keys()):
                             obs_to_edge[edge] = {pt_index:(x,y)}
                         else:
                             obs_to_edge[edge][pt_index] = (x,y)
@@ -211,7 +216,7 @@ def snap_to_edges(wed, points):
                             node_dist = dist_pi1
                             (x,y) = pi1
                         if node_dist < min_dist.next_key(dist):
-                            if edge not in obs_to_edge.keys():
+                            if edge not in list(obs_to_edge.keys()):
                                 obs_to_edge[edge] = {pt_index:(x,y)}
                             else:
                                 obs_to_edge[edge][pt_index] = (x,y)
@@ -235,7 +240,7 @@ def count_per_edge(obs_on_network):
     """
 
     counts = {}
-    for key in obs_on_network.iterkeys():
+    for key in six.iterkeys(obs_on_network):
         counts[key] = len(obs_on_network[key])
     return counts
 
@@ -258,7 +263,7 @@ def simulate_observations(wed, count, distribution='uniform'):
         lengths = wed.edge_length()
         single_lengths = []
         edges = []
-        for edge, l in lengths.iteritems():
+        for edge, l in six.iteritems(lengths):
             if (edge[0], edge[1]) or (edge[1], edge[0]) not in edges:
                 edges.append(edge)
                 single_lengths.append(l)
@@ -273,7 +278,7 @@ def simulate_observations(wed, count, distribution='uniform'):
             assignment_edge = edges[start_index]
             distance_from_start = random_pt - offsets[start_index - 1]
             x0, y0 = newpoint_coords(wed, assignment_edge, distance_from_start)
-            if assignment_edge not in random_pts.keys():
+            if assignment_edge not in list(random_pts.keys()):
                 random_pts[assignment_edge] = [(x0,y0)]
             else:
                 random_pts[assignment_edge].append((x0,y0))
@@ -331,7 +336,7 @@ def dijkstra(wed, cost, node, n=float('inf')):
         last = v
         #4. Get the neighbors to the current node
         neighbors = get_neighbor_distances(wed, v, cost)
-        for v1, indiv_cost in neighbors.iteritems():
+        for v1, indiv_cost in six.iteritems(neighbors):
             if distance[v1] > distance[v] + indiv_cost:
                 distance[v1] = distance[v] + indiv_cost
                 pred[v1] = v
@@ -415,9 +420,9 @@ def insert_node(wed, edge, distance, segment=False):
     wed.node_coords[newcoord_id] = (x0, y0)
     #Update the region edge
     new_edge = (edge[0], newcoord_id)
-    if edge in wed.region_edge.keys():
+    if edge in list(wed.region_edge.keys()):
         wed.region_edge[new_edge] = wed.region_edge.pop(edge)
-    if (edge[1], edge[0]) in wed.region_edge.keys():
+    if (edge[1], edge[0]) in list(wed.region_edge.keys()):
         wed.region_edge[(new_edge[1], new_edge[0])] = wed.region_edge.pop((edge[1], edge[0]))
 
     a = edge[0]
@@ -466,22 +471,22 @@ def insert_node(wed, edge, distance, segment=False):
     wed.end_c[(b, c)] = (c, a)
     wed.end_cc[(b, c)] = (c, a)
     #Update the pointer to the nodes incident to start / end of the original link
-    for k, v in wed.start_c.iteritems():
+    for k, v in six.iteritems(wed.start_c):
         if v == edge:
             wed.start_c[k] = newpointer(k,v,c)
         elif v == rev_edge:
             wed.start_c[k] = newpointer(k,v,c)
-    for k, v in wed.start_cc.iteritems():
+    for k, v in six.iteritems(wed.start_cc):
         if v == edge:
             wed.start_cc[k] = newpointer(k,v,c)
         elif v == rev_edge:
             wed.start_cc[k] = newpointer(k,v,c)
-    for k, v in wed.end_c.iteritems():
+    for k, v in six.iteritems(wed.end_c):
         if v == edge:
             wed.end_c[k] = newpointer(k,v,c)
         elif v == rev_edge:
             wed.end_c[k] = newpointer(k,v,c)
-    for k, v in wed.end_cc.iteritems():
+    for k, v in six.iteritems(wed.end_cc):
         if v == edge:
             wed.end_cc[k] = newpointer(k,v,c)
         elif v == rev_edge:
@@ -491,19 +496,19 @@ def insert_node(wed, edge, distance, segment=False):
     wed.node_edge[a] = (a, c)
     wed.node_edge[b] = (b, c)
     #update right and left polygon regions
-    if edge in wed.right_polygon.keys():
+    if edge in list(wed.right_polygon.keys()):
         right = wed.right_polygon.pop(edge)
         wed.right_polygon[(a, c)] = right
         wed.right_polygon[(c, b)] = right
-    if edge in wed.left_polygon.keys():
+    if edge in list(wed.left_polygon.keys()):
         left = wed.left_polygon.pop(edge)
         wed.left_polygon[(a, c)] = left
         wed.left_polygon[(c, b)] = left
-    if rev_edge in wed.right_polygon.keys():
+    if rev_edge in list(wed.right_polygon.keys()):
         right = wed.right_polygon.pop(rev_edge)
         wed.right_polygon[(b, c)] = right
         wed.right_polygon[(c, a)] = right
-    if rev_edge in wed.left_polygon.keys():
+    if rev_edge in list(wed.left_polygon.keys()):
         left = wed.left_polygon.pop(rev_edge)
         wed.left_polygon[(b, c)] = left
         wed.left_polygon[(c, a)] = left
@@ -542,23 +547,23 @@ def segment_edges(wed, distance=None, count=None):
 
     #Any segmentation has float inconsistencies.  On the order of 1x10^-14
     if count == None and distance == None or count != None and distance != None:
-        print '''
+        print('''
         Please supply either a distance at which to
         segment edges or a count of the number of
         segments to generate per edge.
-        '''
+        ''')
         return
     lengths = edge_length(wed, half=True)
     if count != None:
-        for k, l in lengths.iteritems():
+        for k, l in six.iteritems(lengths):
             interval = l / count
             wed = segment(count, interval, wed, k[0], k[1])
     elif distance:
-        for k, l in lengths.iteritems():
+        for k, l in six.iteritems(lengths):
             if distance >= l or l / distance == 0:
                 continue
             count = l / distance
-            print count
+            print(count)
             wed = segment(count, distance, wed, k[0], k[1])
     return wed
 
@@ -606,7 +611,7 @@ def threshold_distance(wed, cost, node, threshold, midpoint=False):
             break
         #4. Get the neighbors to the current node
         neighbors = get_neighbor_distances(wed, v, cost)
-        for v1, indiv_cost in neighbors.iteritems():
+        for v1, indiv_cost in six.iteritems(neighbors):
             if distance[v1] > distance[v] + indiv_cost:
                 distance[v1] = distance[v] + indiv_cost
                 pred[v1] = v
@@ -650,7 +655,7 @@ def knn_distance(wed, cost, node, n):
         last = v
         #4. Get the neighbors to the current node
         neighbors = get_neighbor_distances(wed, v, cost)
-        for v1, indiv_cost in neighbors.iteritems():
+        for v1, indiv_cost in six.iteritems(neighbors):
             if distance[v1] > distance[v] + indiv_cost:
                 distance[v1] = distance[v] + indiv_cost
                 pred[v1] = v
@@ -694,7 +699,7 @@ def polyShp2Network(shpFile):
             nodes[end] = end
             edges[(start,end)] = (start,end)
     f.close()
-    return {"nodes": nodes, "edges": edges.values() }
+    return {"nodes": nodes, "edges": list(edges.values()) }
 
 
 def euler_nonplaner_test(e, v):

@@ -10,6 +10,11 @@ TO DO
 """
 
 
+import six
+from six.moves import range
+from six.moves import zip
+
+
 __author__ = "Sergio Rey <sjsrey@gmail.com>, Jay Laura <jlaura@asu.edu>"
 
 
@@ -20,7 +25,7 @@ import networkx as nx
 from numpy import array
 import operator
 import math
-import net_shp_io
+from . import net_shp_io
 
 def enum_links_node(wed, node):
     """
@@ -158,7 +163,7 @@ def connected_components(adjacency):
 
     components: list of lists for connected components
     """
-    nodes = adjacency.keys()
+    nodes = list(adjacency.keys())
     components = []
     while nodes:
         start = nodes.pop()
@@ -318,7 +323,7 @@ def regions_from_graph(nodes, edges, remove_holes = False):
     def find_start_node(nodes,node_coord):
         start_node = []
         minx = float('inf')
-        for key,node in nodes.items():
+        for key,node in list(nodes.items()):
             if node[0] <= minx:
                 minx = node[0]
                 start_node.append(key)
@@ -577,8 +582,8 @@ def regions_from_graph(nodes, edges, remove_holes = False):
 
         return sorted_nodes, edges, nodes, node_coord, primitives, minimal_cycles,cycle_edge, vertices, ext_edges
     #1.
-    sorted_nodes = sorted(nodes.iteritems(), key=operator.itemgetter(1))
-    node_coord = dict (zip(nodes.values(),nodes.keys()))
+    sorted_nodes = sorted(six.iteritems(nodes), key=operator.itemgetter(1))
+    node_coord = dict (list(zip(list(nodes.values()),list(nodes.keys()))))
     
     #2.
     primitives = []
@@ -700,7 +705,7 @@ def extract_wed(edges, coords):
     """
 
     # find minimum cycles, filaments and isolated nodes
-    pos = coords.values()
+    pos = list(coords.values())
     mcb = regions_from_graph(coords,edges)
     # Edge pointers
     # 
@@ -763,7 +768,7 @@ def extract_wed(edges, coords):
     # region have external bounding polygon as implicit left poly. Assign this
     # explicitly
 
-    rpkeys = right_polygon.keys() # only minimum cycle regions have explicit right polygons
+    rpkeys = list(right_polygon.keys()) # only minimum cycle regions have explicit right polygons
     noleft_poly = [k for k in rpkeys if k not in left_polygon]
 
     for edge in noleft_poly:
@@ -772,7 +777,7 @@ def extract_wed(edges, coords):
 
     # Fill out s_c, s_cc, e_c, e_cc pointers for each edge (before filaments are added)
 
-    regions = region_edge.keys()
+    regions = list(region_edge.keys())
 
     # Find the union of adjacent faces/regions
     unions = []
@@ -1008,7 +1013,7 @@ if __name__ == '__main__':
     vertices[27] = [25,26]
 
     eberly = vertices.copy()
-    pos = coords.values()
+    pos = list(coords.values())
 
     #eg = nx.Graph(vertices)
     #g = nx.Graph(vertices)
@@ -1022,15 +1027,15 @@ if __name__ == '__main__':
             
     wed_res = extract_wed(edges, coords)
 
-    print "Enumeration of links around nodes"
+    print("Enumeration of links around nodes")
     for node in range(0,28):
-        print node, enum_links_node(wed_res, node)
+        print(node, enum_links_node(wed_res, node))
 
-    print "Enumeration of links around regions"
+    print("Enumeration of links around regions")
     for region in range(7):
-        print region, enum_edges_region(wed_res, region)
+        print(region, enum_edges_region(wed_res, region))
 
-    print "Eberly Test Completed \n"
+    print("Eberly Test Completed \n")
 
     # new test from eberly shapefile after converting with contrib\spatialnet
     
@@ -1101,15 +1106,15 @@ if __name__ == '__main__':
         
     wed_1 = extract_wed(dbl_edges, coords)
 
-    print "Enumeration of links around nodes"
+    print("Enumeration of links around nodes")
     for node in range(0,26):
-        print node, enum_links_node(wed_1, node)
+        print(node, enum_links_node(wed_1, node))
 
-    print "Enumeration of links around regions"
+    print("Enumeration of links around regions")
     for region in range(7):
-        print region, enum_edges_region(wed_1, region)    
+        print(region, enum_edges_region(wed_1, region))    
         
-    print "Eberly Shapefile (non-ordered nodes) Complete"
+    print("Eberly Shapefile (non-ordered nodes) Complete")
 
 
     # testing reader
@@ -1117,14 +1122,14 @@ if __name__ == '__main__':
     wed_2 = extract_wed(edges, coords)
 
 
-    print "Enumeration of links around nodes"
+    print("Enumeration of links around nodes")
     for node in range(0,26):
-        print node, enum_links_node(wed_1, node)
+        print(node, enum_links_node(wed_1, node))
 
-    print "Enumeration of links around regions"
+    print("Enumeration of links around regions")
     for region in range(7):
-        print region, enum_edges_region(wed_1, region)    
+        print(region, enum_edges_region(wed_1, region))    
         
-    print "Eberly read Shapefile (non-ordered nodes) Complete"
+    print("Eberly read Shapefile (non-ordered nodes) Complete")
 
 

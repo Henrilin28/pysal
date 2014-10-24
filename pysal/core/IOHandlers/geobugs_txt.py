@@ -1,8 +1,11 @@
+
 import pysal
 import os.path
 import pysal.core.FileIO as FileIO
 from pysal.weights import W
 from warnings import warn
+from six.moves import map
+from six.moves import range
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["GeoBUGSTextIO"]
@@ -130,12 +133,12 @@ class GeoBUGSTextIO(FileIO.FileIO):
             part_text = fbody[start:end]
 
             part_length, start, end = len(part_text), 0, -1
-            for c in xrange(part_length):
+            for c in range(part_length):
                 if part_text[c].isdigit():
                     start = c
                     break
 
-            for c in xrange(part_length - 1, 0, -1):
+            for c in range(part_length - 1, 0, -1):
                 if part_text[c].isdigit():
                     end = c + 1
                     break
@@ -157,7 +160,7 @@ class GeoBUGSTextIO(FileIO.FileIO):
         neighbors = {}
         weights = {}
         pos = 0
-        for i in xrange(no_obs):
+        for i in range(no_obs):
             neighbors[i + 1] = []
             weights[i + 1] = []
             no_nghs = cardinalities[i]

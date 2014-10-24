@@ -1,3 +1,5 @@
+
+
 import pysal.core.Tables
 import datetime
 import struct
@@ -5,6 +7,7 @@ import itertools
 from warnings import warn
 import pysal
 import sys
+from six.moves import range
 
 PY3 = sys.version > '3'
 
@@ -66,7 +69,7 @@ class DBF(pysal.core.Tables.DataTable):
             fmt = 's'
             self._col_index = {}
             idx = 0
-            for fieldno in xrange(numfields):
+            for fieldno in range(numfields):
                 name, typ, size, deci = struct.unpack(
                     '<11sc4xBB14x', f.read(32))
                 if PY3:
@@ -119,7 +122,7 @@ class DBF(pysal.core.Tables.DataTable):
         f = self.f
         f.seek(self.header_size + offset)
         col = [0] * self.n_records
-        for i in xrange(self.n_records):
+        for i in range(self.n_records):
             value = f.read(size)
             f.seek(gap, 1)
             if typ == 'N':
@@ -164,7 +167,7 @@ class DBF(pysal.core.Tables.DataTable):
         if rec[0] != ' ':
             return self.read_record(i + 1)
         result = []
-        for (name, typ, size, deci), value in itertools.izip(self.field_info, rec):
+        for (name, typ, size, deci), value in zip(self.field_info, rec):
             if name == 'DeletionFlag':
                 continue
             if typ == 'N':
@@ -222,7 +225,7 @@ class DBF(pysal.core.Tables.DataTable):
             raise TypeError("Rows must contains %d fields" % len(self.header))
         self.numrec += 1
         self.f.write(' ')                        # deletion flag
-        for (typ, size, deci), value in itertools.izip(self.field_spec, obj):
+        for (typ, size, deci), value in zip(self.field_spec, obj):
             if value is None:
                 if typ == 'C':
                     value = ' ' * size
@@ -243,7 +246,7 @@ class DBF(pysal.core.Tables.DataTable):
             try:
                 assert len(value) == size
             except:
-                print value, len(value), size
+                print(value, len(value), size)
                 raise
             self.f.write(value)
             self.pos += 1
@@ -284,7 +287,7 @@ class DBF(pysal.core.Tables.DataTable):
                           lenheader, lenrecord)
         self.f.write(hdr)
         # field specs
-        for name, (typ, size, deci) in itertools.izip(self.header, self.field_spec):
+        for name, (typ, size, deci) in zip(self.header, self.field_spec):
             name = name.ljust(11, '\x00')
             fld = struct.pack('<11sc4xBB14x', name, typ, size, deci)
             self.f.write(fld)
@@ -301,9 +304,9 @@ if __name__ == '__main__':
     newDB = pysal.open('copy.dbf', 'w')
     newDB.header = f.header
     newDB.field_spec = f.field_spec
-    #print f.header
+    print(f.header)
     for row in f:
-        print row
+        print(row)
         newDB.write(row)
     newDB.close()
     copy = pysal.open('copy.dbf', 'r')

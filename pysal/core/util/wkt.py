@@ -1,5 +1,7 @@
+
 from pysal import cg
 import re
+from six.moves import map
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ['WKTParser']
@@ -83,7 +85,7 @@ class WKTParser:
 
     def LineString(self, geoStr):
         points = geoStr.strip().split(',')
-        points = map(self.Point, points)
+        points = list(map(self.Point, points))
         return cg.Chain(points)
 
     def Polygon(self, geoStr):

@@ -3,6 +3,9 @@ Gamma index for spatial autocorrelation
 
 
 """
+
+from six.moves import range
+from six.moves import zip
 __author__ = "Luc Anselin <luc.anselin@asu.edu>"
 
 import pysal
@@ -153,7 +156,7 @@ class Gamma:
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.y), self.op)
-                   for i in xrange(permutations)]
+                   for i in range(permutations)]
             self.sim_g = np.array(sim)
             self.min_g = np.min(self.sim_g)
             self.mean_g = np.mean(self.sim_g)
@@ -172,7 +175,7 @@ class Gamma:
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = zip(neighbors, wijs)
+                zw = list(zip(neighbors, wijs))
                 zs[i] = sum([wij * (z2[i] - 2.0 * z[i] * z[
                     j] + z2[j]) for j, wij in zw])
             g = zs.sum()
@@ -181,7 +184,7 @@ class Gamma:
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = zip(neighbors, wijs)
+                zw = list(zip(neighbors, wijs))
                 zs[i] = sum([wij * abs(z[i] - z[j]) for j, wij in zw])
             g = zs.sum()
         else:              # any previously defined function op
@@ -189,7 +192,7 @@ class Gamma:
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = zip(neighbors, wijs)
+                zw = list(zip(neighbors, wijs))
                 zs[i] = sum([wij * op(z, i, j) for j, wij in zw])
             g = zs.sum()
         return g

@@ -2,8 +2,11 @@
 Diversity indices as suggested in Nijkamp & Poot (2013)
 '''
 
+
+
 import itertools
 import numpy as np
+from six.moves import range
 
 def abundance(x):
     '''
@@ -567,13 +570,13 @@ if __name__=='__main__':
             maurel_sedillot_msg, \
             maurel_sedillot_msg_pop, \
             ]
-    res = [(f_i.func_name, f_i(x)) for f_i in ids]
-    print '\nIndices'
+    res = [(f_i.__name__, f_i(x)) for f_i in ids]
+    print('\nIndices')
     for r in res:
-        print r[1], '\t', r[0]
+        print(r[1], '\t', r[0])
 
     tau = np.random.random((x.shape[1], x.shape[1]))
     for i in range(tau.shape[0]):
         tau[i, i] = 1.
-    print similarity_w_wd(x, tau)
+    print(similarity_w_wd(x, tau))
 

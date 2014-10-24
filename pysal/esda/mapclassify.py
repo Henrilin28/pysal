@@ -1,6 +1,10 @@
 """
 A module of classification schemes for choropleth mapping.
 """
+
+
+from six.moves import range
+from six.moves import zip
 __author__ = "Sergio J. Rey"
 __credits__ = "Copyright (c) 2009-10 Sergio J. Rey"
 
@@ -120,8 +124,8 @@ def binC(y, bins):
     vals = set(y.flatten())
     for val in vals:
         if val not in bins:
-            print 'warning: value not in bin: ', val
-            print 'bins: ', bins
+            print('warning: value not in bin: ', val)
+            print('bins: ', bins)
 
     return b
 
@@ -223,10 +227,10 @@ def bin1d(x, bins):
     >>> counts
     array([26, 49, 25])
     """
-    left = [-sys.maxint]
+    left = [-sys.maxsize]
     left.extend(bins[0:-1])
     right = bins
-    cuts = zip(left, right)
+    cuts = list(zip(left, right))
     k = len(bins)
     binIds = np.zeros(x.shape, dtype='int')
     while cuts:
@@ -256,10 +260,10 @@ def natural_breaks(values, k=5, itmax=100):
     uv = np.unique(values)
     uvk = len(uv)
     if  uvk < k:
-        print 'Warning: Not enough unique values in array to form k classes'
-        print "Warning: setting k to %d" % uvk
+        print('Warning: Not enough unique values in array to form k classes')
+        print("Warning: setting k to %d" % uvk)
         k = uvk
-    sids = np.random.permutation(range(len(uv)))[0:k]
+    sids = np.random.permutation(list(range(len(uv))))[0:k]
     seeds = uv[sids]
     seeds.sort()
     diffs = abs(np.matrix([values - seed for seed in seeds]))
@@ -267,7 +271,7 @@ def natural_breaks(values, k=5, itmax=100):
     c0 = np.array(c0)[0]
     solving = True
     solved = False
-    rk = range(k)
+    rk = list(range(k))
     it = 0
     while solving:
         # get centroids of clusters
@@ -1012,7 +1016,7 @@ class Natural_Breaks(Map_Classifier):
         k = self.k
         res0 = natural_breaks(x, k)
         fit = res0[2].sum()
-        for i in xrange(self.initial):
+        for i in range(self.initial):
             res = natural_breaks(x, k)
             fit_i = res[2].sum()
             if fit_i < fit:
@@ -1186,7 +1190,7 @@ class Jenks_Caspall(Map_Classifier):
         xb0 = xb.copy()
         q = xm
         it = 0
-        rk = range(self.k)
+        rk = list(range(self.k))
         while solving:
             xb = np.zeros(xb0.shape, int)
             d = abs(x - q)
@@ -1557,10 +1561,10 @@ class Max_P_Classifier(Map_Classifier):
         best_tss = x.var() * x.shape[0]
         tss_all = np.zeros((self.initial, 1))
         while solution < self.initial:
-            remaining = range(n)
+            remaining = list(range(n))
             seeds = [np.nonzero(di == min(
                 di))[0][0] for di in [np.abs(x - qi) for qi in q]]
-            rseeds = np.random.permutation(range(k)).tolist()
+            rseeds = np.random.permutation(list(range(k))).tolist()
             tmp = [remaining.remove(seed) for seed in seeds]
             self.classes = classes = []
             tmp = [classes.append([seed]) for seed in seeds]
@@ -1605,7 +1609,7 @@ class Max_P_Classifier(Map_Classifier):
         swapping = True
         it = 0
         while swapping:
-            rseeds = np.random.permutation(range(k)).tolist()
+            rseeds = np.random.permutation(list(range(k))).tolist()
             total_moves = 0
             while rseeds:
                 id = rseeds.pop()
@@ -1811,7 +1815,7 @@ class K_classifiers:
         best = gadf(y, "Fisher_Jenks", maxk=len(y) - 1, pct=pct)
         pct0 = best[0]
         k0 = best[-1]
-        keys = kmethods.keys()
+        keys = list(kmethods.keys())
         keys.remove("Fisher_Jenks")
         results["Fisher_Jenks"] = best
         for method in keys:
@@ -1848,8 +1852,8 @@ def opt_part(x):
     n = len(x)
     tss = np.inf
     opt_i = -999
-    for i in xrange(1, n):
-        print i
+    for i in range(1, n):
+        print(i)
         left = x[:i].var() * i
         right = x[i:].var() * (n - i)
         tss_i = left + right

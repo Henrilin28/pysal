@@ -11,6 +11,9 @@ R-tree.
 see doc/ref/r-tree-clustering-split-algo.pdf
 """
 
+
+from six.moves import range
+
 __author__ = "Sergio J. Rey"
 
 __all__ = ['RTree', 'Rect', 'Rtree']
@@ -621,8 +624,8 @@ def k_means_cluster(root, k, nodes):
         for c in clusters:
             if (len(c) == 0):
                 print("Errorrr....")
-                print("Nodes: %d, centers: %s" % (len(ns),
-                                                  repr(cluster_centers)))
+                print(("Nodes: %d, centers: %s" % (len(ns),
+                                                  repr(cluster_centers))))
 
             assert(len(c) > 0)
 

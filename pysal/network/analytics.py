@@ -9,7 +9,8 @@
  - Accessibility Indices
 """
 
-import networkw
+
+from . import networkw
 import pysal as ps
 
 def gincs(wed, y, permutations=999, segment=False):

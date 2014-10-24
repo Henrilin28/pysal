@@ -1,7 +1,9 @@
+
 import unittest
 import pysal
 from pysal.spatial_dynamics import ergodic
 import numpy as np
+from six.moves import range
 
 
 class SteadyState_Tester(unittest.TestCase):

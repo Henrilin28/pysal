@@ -1,13 +1,15 @@
 """Internal helper files for user output."""
 
+from six.moves import range
+
 __author__ = "Luc Anselin luc.anselin@asu.edu, David C. Folch david.folch@asu.edu, Pedro V. Amaral pedro.amaral@asu.edu, Jing Yao jingyao@asu.edu"
 
 import textwrap as TW
 import numpy as np
 import copy as COPY
-import diagnostics as diagnostics
-import diagnostics_tsls as diagnostics_tsls
-import diagnostics_sp as diagnostics_sp
+from . import diagnostics as diagnostics
+from . import diagnostics_tsls as diagnostics_tsls
+from . import diagnostics_sp as diagnostics_sp
 import pysal
 import scipy
 from scipy.sparse.csr import csr_matrix
@@ -786,7 +788,7 @@ def summary_multi(reg, multireg, vm, instruments, short_intro=False, nonspat_dia
             summary += mreg.__summary['summary_other_mid']
         except:
             pass
-        if m == multireg.keys()[-1]:
+        if m == list(multireg.keys())[-1]:
             try:
                 summary += reg.__summary['summary_other_mid']
             except:
@@ -800,7 +802,7 @@ def summary_multi(reg, multireg, vm, instruments, short_intro=False, nonspat_dia
             summary += summary_vm(mreg, instruments)
         if other_end:
             summary += mreg.__summary['summary_other_end']
-        if m == multireg.keys()[-1]:
+        if m == list(multireg.keys())[-1]:
             try:
                 summary += reg.__summary['summary_chow']
             except:

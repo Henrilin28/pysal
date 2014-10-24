@@ -5,11 +5,13 @@ representation for network algorithms
 """
 
 
+
 # example of edges from de berg fig 2.6
 
 import  pysal as ps
 
 import networkx as nx
+from six.moves import range
 
 
 class Vertex:

@@ -1,3 +1,7 @@
+
+import six
+from six.moves import range
+from six.moves import zip
 # Data structures for network module
 
 __author__ = "Sergio Rey <sjsrey@gmail.com>, Jay Laura <jlaura@asu.edu>"
@@ -6,8 +10,8 @@ import operator
 import math
 import numpy as np
 import pysal as ps
-import util
-import networkw
+from . import util
+from . import networkw
 
 
 class WED(object):
@@ -167,7 +171,7 @@ class WED(object):
         coords_org = coords.copy()
 
         # find minimum cycles, filaments and isolated nodes
-        pos = coords.values()
+        pos = list(coords.values())
         mcb = self.regions_from_graph(coords, edges)
 
         regions = mcb['regions']
@@ -208,13 +212,13 @@ class WED(object):
                 end_c[twin] = start_c[edge]
             region_edge[ri] = edge
 
-        rpkeys = right_polygon.keys()  # only minimum cycle regions have explicit right polygons
+        rpkeys = list(right_polygon.keys())  # only minimum cycle regions have explicit right polygons
         noleft_poly = [k for k in rpkeys if k not in left_polygon]
 
         for edge in noleft_poly:
             left_polygon[edge] = ri + 1
         # Fill out s_c, s_cc, e_c, e_cc pointers for each edge (before filaments are added)
-        regions = region_edge.keys()
+        regions = list(region_edge.keys())
 
         # Find the union of adjacent faces/regions
         unions = []
@@ -361,11 +365,11 @@ class WED(object):
                             left_polygon[(filament[n+1], filament[n])] = r
 
         #Fill in start_c and end_cc for external links
-        for k, v in start_cc.iteritems():
-            if k not in end_cc.keys():
+        for k, v in six.iteritems(start_cc):
+            if k not in list(end_cc.keys()):
                 end_cc[k] = v
-        for k, v in end_c.iteritems():
-            if k not in start_c.keys():
+        for k, v in six.iteritems(end_c):
+            if k not in list(start_c.keys()):
                 start_c[k] = v
 
         self.start_c = start_c
@@ -379,7 +383,7 @@ class WED(object):
         self.start_node = start_node
         self.end_node = end_node
         self.node_coords = coords_org
-        self.node_list = [n for n in self.node_coords.keys()]
+        self.node_list = [n for n in list(self.node_coords.keys())]
 
     @staticmethod
     def filament_pointers(filament, node_edge={}):
@@ -534,7 +538,7 @@ class WED(object):
         def find_start_node(nodes, node_coord):
             start_node = []
             minx = float('inf')
-            for key, node in nodes.items():
+            for key, node in list(nodes.items()):
                 if node[0] <= minx:
                     minx = node[0]
                     start_node.append(key)
@@ -790,8 +794,8 @@ class WED(object):
 
             return sorted_nodes, edges, nodes, node_coord, primitives, minimal_cycles,cycle_edge, vertices, ext_edges
         #1.
-        sorted_nodes = sorted(nodes.iteritems(), key=operator.itemgetter(1))
-        node_coord = dict (zip(nodes.values(),nodes.keys()))
+        sorted_nodes = sorted(six.iteritems(nodes), key=operator.itemgetter(1))
+        node_coord = dict (list(zip(list(nodes.values()),list(nodes.keys()))))
 
         #2.
         primitives = []
