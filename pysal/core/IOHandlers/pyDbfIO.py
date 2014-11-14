@@ -228,7 +228,8 @@ class DBF(pysal.core.Tables.DataTable):
         if len(obj) != len(self.header):
             raise TypeError("Rows must contains %d fields" % len(self.header))
         self.numrec += 1
-        self.f.write(' ')                        # deletion flag
+        tmp = ' '
+        self.f.write(tmp.encode('utf8'))       # deletion flag
         for (typ, size, deci), value in zip(self.field_spec, obj):
             if value is None:
                 if typ == 'C':
@@ -252,7 +253,7 @@ class DBF(pysal.core.Tables.DataTable):
             except:
                 print(value, len(value), size)
                 raise
-            self.f.write(value)
+            self.f.write(value.encode('utf8'))
             self.pos += 1
 
     def flush(self):
@@ -296,7 +297,11 @@ class DBF(pysal.core.Tables.DataTable):
             name = name.ljust(11, '\x00')
             print(name)
             print(deci)
-            fld = struct.pack('<11bc4xBB4x', name, typ, size, deci)
+            print(type(name))
+            print(name)
+            print(len(name))
+            name  = bytes(name, 'utf8')
+            fld = struct.pack('<11sc4xBB4x', name, typ, size, deci)
             self.f.write(fld)
         # terminator
         self.f.write(b'\r')
@@ -313,6 +318,8 @@ if __name__ == '__main__':
     newDB.field_spec = f.field_spec
     print(f.header)
     for row in f:
+        print(row)
+        input('here')
         newDB.write(row)
     #newDB.close()
     #copy = pysal.open('copy.dbf', 'r')

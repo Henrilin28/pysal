@@ -255,7 +255,7 @@ class FileIO(six.with_metaclass(FileIO_MetaCls, object)):  # should be a type?
         self._complain_ifclosed(self.closed)
         r = self.__read()
         if r is None:
-            raise StopIteration
+            raise StopIteration()
         return r
 
     def close(self):
