@@ -240,7 +240,7 @@ class FileIO(six.with_metaclass(FileIO_MetaCls, object)):  # should be a type?
                 for f, v in zip(self._spec, row):
                     try:
                         if not v and f != str:
-                            raise ValueError
+                            raise ValueError()
                         r.append(f(v))
                     except ValueError:
                         warn("Value '%r' could not be cast to %s, value set to pysal.MISSINGVALUE" % (v, str(f)), RuntimeWarning)
@@ -316,7 +316,7 @@ class FileIO(six.with_metaclass(FileIO_MetaCls, object)):  # should be a type?
         """ Gets one row from the file handler, and if necessary casts it's objects """
         row = self._read()
         if row is None:
-            raise StopIteration
+            raise StopIteration()
         row = self._cast(row)
         return row
 
